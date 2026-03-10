@@ -15,6 +15,13 @@
     
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #0f172a; overflow: hidden; margin: 0; }
+        
+        /* Custom Scrollbar for inner slide content */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
         .slide-container { position: relative; width: 100vw; height: 100vh; }
         .slide {
             position: absolute;
@@ -34,7 +41,7 @@
             z-index: 10;
         }
         .venn-circle {
-            width: 260px; height: 260px; border-radius: 50%;
+            width: 240px; height: 240px; border-radius: 50%;
             position: absolute; top: 50%; transform: translateY(-50%);
             mix-blend-multiply; opacity: 0.8;
             display: flex; align-items: center; justify-content: center;
@@ -59,7 +66,7 @@
 
     <!-- SLIDE 1 -->
     <div class="slide active" id="slide-1">
-        <header class="bg-slate-900 text-white px-10 py-6 shadow-md flex justify-between items-center">
+        <header class="bg-slate-900 text-white px-10 py-6 shadow-md flex justify-between items-center z-20">
             <div>
                 <span class="text-blue-400 font-bold tracking-wider text-base uppercase">Slide 1 : Executive Summary</span>
                 <h1 class="text-4xl font-extrabold mt-2">Reversing the Contraction</h1>
@@ -67,7 +74,7 @@
             </div>
             <i data-lucide="trending-down" class="text-red-400 w-14 h-14"></i>
         </header>
-        <main class="flex-1 p-10 flex flex-col md:flex-row gap-10 overflow-hidden">
+        <main class="flex-1 p-10 pb-28 flex flex-col md:flex-row gap-10 overflow-y-auto">
             <div class="w-full md:w-5/12 flex flex-col justify-center space-y-8">
                 <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 border-l-8 border-l-blue-500">
                     <h3 class="font-bold text-slate-800 text-xl flex items-center gap-3"><i data-lucide="info" class="w-7 h-7 text-blue-500"></i> Current Situation</h3>
@@ -82,10 +89,10 @@
                     <p class="text-lg text-slate-600 mt-3 leading-relaxed">Fokus manajemen harus digeser dari Acquisition ke <strong>Customer Lifetime Value Maximization</strong> melalui 3 pilar: Lifecycle Management, Yield Optimization, dan Capacity Rebalancing.</p>
                 </div>
             </div>
-            <div class="w-full md:w-7/12 bg-white rounded-2xl shadow-sm p-8 border border-slate-200 flex flex-col h-full">
+            <div class="w-full md:w-7/12 bg-white rounded-2xl shadow-sm p-8 border border-slate-200 flex flex-col h-full min-h-[400px]">
                 <h3 class="text-center font-bold text-slate-800 text-2xl mb-2">Kontraksi Pendapatan vs Transaksi (3 Bulan Terakhir)</h3>
                 <p class="text-base text-center text-slate-500 mb-6">Tren menunjukkan penurunan simultan pada *Revenue* dan Volume</p>
-                <div class="relative flex-1 w-full min-h-[300px]">
+                <div class="relative flex-1 w-full min-h-[250px]">
                     <canvas id="chart1"></canvas>
                 </div>
             </div>
@@ -94,7 +101,7 @@
 
     <!-- SLIDE 2 -->
     <div class="slide" id="slide-2">
-        <header class="bg-slate-900 text-white px-10 py-6 shadow-md flex justify-between items-center">
+        <header class="bg-slate-900 text-white px-10 py-6 shadow-md flex justify-between items-center z-20">
             <div>
                 <span class="text-blue-400 font-bold tracking-wider text-base uppercase">Slide 2 : Top-Line Performance & Revenue Drivers</span>
                 <h1 class="text-4xl font-extrabold mt-2">Degradasi Ticket Size & Downgrade Layanan</h1>
@@ -102,7 +109,7 @@
             </div>
             <i data-lucide="bar-chart-2" class="text-orange-400 w-14 h-14"></i>
         </header>
-        <main class="flex-1 p-10 flex flex-col md:flex-row gap-10 overflow-hidden">
+        <main class="flex-1 p-10 pb-28 flex flex-col md:flex-row gap-10 overflow-y-auto">
             <div class="w-full md:w-1/2 flex flex-col justify-center space-y-8">
                 <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
                     <h4 class="font-bold text-slate-800 text-xl">📉 Tren Pendapatan & AOV Drop</h4>
@@ -117,10 +124,10 @@
                     <p class="text-lg text-blue-700 mt-3 leading-relaxed">Tidak bisa hanya mengandalkan volume. Diperlukan intervensi harga (bundling) untuk memaksa AOV kembali ke atas batas Rp 400.000.</p>
                 </div>
             </div>
-            <div class="w-full md:w-1/2 bg-white rounded-2xl shadow-sm p-8 border border-slate-200 flex flex-col h-full">
+            <div class="w-full md:w-1/2 bg-white rounded-2xl shadow-sm p-8 border border-slate-200 flex flex-col h-full min-h-[400px]">
                 <h3 class="text-center font-bold text-slate-800 text-2xl mb-2">Distribusi Transaksi Berdasarkan Kelas Harga (100% Stacked)</h3>
                 <p class="text-base text-center text-slate-500 mb-6">Penyusutan drastis pada porsi layanan Premium per bulannya</p>
-                <div class="relative flex-1 w-full min-h-[300px]">
+                <div class="relative flex-1 w-full min-h-[250px]">
                     <canvas id="chart2"></canvas>
                 </div>
             </div>
@@ -129,7 +136,7 @@
 
     <!-- SLIDE 3 -->
     <div class="slide" id="slide-3">
-        <header class="bg-slate-900 text-white px-10 py-6 shadow-md flex justify-between items-center">
+        <header class="bg-slate-900 text-white px-10 py-6 shadow-md flex justify-between items-center z-20">
             <div>
                 <span class="text-blue-400 font-bold tracking-wider text-base uppercase">Slide 3 : Customer Lifecycle & Retention</span>
                 <h1 class="text-4xl font-extrabold mt-2">Fenomena "Leaky Bucket"</h1>
@@ -137,10 +144,12 @@
             </div>
             <i data-lucide="users" class="text-purple-400 w-14 h-14"></i>
         </header>
-        <main class="flex-1 p-10 flex flex-col md:flex-row gap-10 overflow-hidden">
-            <div class="w-full md:w-1/2 bg-white rounded-2xl shadow-sm p-8 border border-slate-200 flex flex-col justify-center items-center h-full">
+        <main class="flex-1 p-10 pb-28 flex flex-col md:flex-row gap-10 overflow-y-auto">
+            <div class="w-full md:w-1/2 bg-white rounded-2xl shadow-sm p-8 border border-slate-200 flex flex-col justify-center items-center h-full min-h-[450px]">
                 <h3 class="text-center font-bold text-slate-800 text-2xl mb-6">Komposisi Retensi Pelanggan</h3>
-                <div class="relative w-full max-w-[450px] aspect-square">
+                
+                <!-- Slightly reduced max-width to allow more room for table below -->
+                <div class="relative w-full max-w-[380px] aspect-square">
                     <canvas id="chart3"></canvas>
                     <div class="absolute inset-0 flex items-center justify-center flex-col pointer-events-none">
                         <span class="text-5xl font-black text-red-500">65.6%</span>
@@ -154,8 +163,8 @@
                     <table class="w-full text-lg text-center border-collapse">
                         <thead>
                             <tr class="bg-slate-100 text-slate-600">
-                                <th class="p-3 border border-slate-200">Bulan Akuisisi</th>
-                                <th class="p-3 border border-slate-200">Bulan 1 (Retained)</th>
+                                <th class="p-3 border border-slate-200 w-1/2">Bulan Akuisisi</th>
+                                <th class="p-3 border border-slate-200 w-1/2">Bulan 1 (Retained)</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -193,7 +202,7 @@
 
     <!-- SLIDE 4 -->
     <div class="slide" id="slide-4">
-        <header class="bg-slate-900 text-white px-10 py-6 shadow-md flex justify-between items-center">
+        <header class="bg-slate-900 text-white px-10 py-6 shadow-md flex justify-between items-center z-20">
             <div>
                 <span class="text-blue-400 font-bold tracking-wider text-base uppercase">Slide 4 : Wallet Share & Market Basket</span>
                 <h1 class="text-4xl font-extrabold mt-2">Silo Produk Ekstrem & Minimnya Cross-Selling</h1>
@@ -201,7 +210,7 @@
             </div>
             <i data-lucide="shopping-bag" class="text-pink-400 w-14 h-14"></i>
         </header>
-        <main class="flex-1 p-10 flex flex-col md:flex-row gap-10 overflow-hidden">
+        <main class="flex-1 p-10 pb-28 flex flex-col md:flex-row gap-10 overflow-y-auto">
             <div class="w-full md:w-1/2 flex flex-col justify-center space-y-8">
                 <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
                     <h4 class="font-bold text-slate-800 text-2xl mb-4">Key Insights</h4>
@@ -217,33 +226,34 @@
                     <p class="text-lg text-blue-700 mt-3 leading-relaxed">Ciptakan <strong>"Hero Bundles"</strong> (Misal: Massage + Facial atau Reflexy + Nails) untuk mendobrak sekat ini.</p>
                 </div>
             </div>
-            <div class="w-full md:w-1/2 bg-white rounded-2xl shadow-sm p-8 border border-slate-200 flex flex-col justify-center items-center relative h-full">
-                <h3 class="text-center font-bold text-slate-800 text-2xl mb-12 z-10">Cross-Pollination Departemen (Venn Diagram)</h3>
+            <div class="w-full md:w-1/2 bg-white rounded-2xl shadow-sm p-8 border border-slate-200 flex flex-col justify-center items-center relative h-full min-h-[450px]">
+                <h3 class="text-center font-bold text-slate-800 text-2xl mb-8 z-10">Cross-Pollination Departemen (Venn Diagram)</h3>
                 
-                <div class="relative w-[500px] h-[400px] flex justify-center mt-6">
+                <!-- Reduced fixed height to fit smaller screens better -->
+                <div class="relative w-full max-w-[400px] h-[300px] flex justify-center mt-4">
                     <!-- Circle 1 -->
                     <div class="venn-circle bg-blue-500 left-0 shadow-lg flex-col">
-                        <span class="text-xl uppercase tracking-wider opacity-90">Pijat & Facial</span>
+                        <span class="text-lg uppercase tracking-wider opacity-90">Pijat & Facial</span>
                     </div>
                     <!-- Circle 2 -->
                     <div class="venn-circle bg-pink-500 right-0 shadow-lg flex-col">
-                        <span class="text-xl uppercase tracking-wider opacity-90">Beauty & Nails</span>
+                        <span class="text-lg uppercase tracking-wider opacity-90">Beauty & Nails</span>
                     </div>
                     <!-- Intersection Label -->
-                    <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20 flex flex-col items-center bg-white/95 p-5 rounded-full shadow-lg border border-slate-200">
-                        <span class="font-black text-slate-800 text-4xl">10.6%</span>
+                    <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20 flex flex-col items-center bg-white/95 p-4 rounded-full shadow-lg border border-slate-200">
+                        <span class="font-black text-slate-800 text-3xl">10.6%</span>
                         <span class="text-sm font-bold text-slate-500 leading-tight mt-1 text-center">CROSS<br>BUYERS</span>
-                        <span class="text-xs text-slate-400 mt-2 font-medium">(17 Orang)</span>
+                        <span class="text-xs text-slate-400 mt-1 font-medium">(17 Orang)</span>
                     </div>
                 </div>
-                <p class="text-base text-center text-slate-500 mt-12 z-10 max-w-md">Irisan yang sangat sempit di atas merepresentasikan minimnya efektivitas <em>cross-selling</em> harian.</p>
+                <p class="text-base text-center text-slate-500 mt-8 z-10 max-w-md">Irisan yang sangat sempit di atas merepresentasikan minimnya efektivitas <em>cross-selling</em> harian.</p>
             </div>
         </main>
     </div>
 
     <!-- SLIDE 5 -->
     <div class="slide" id="slide-5">
-        <header class="bg-slate-900 text-white px-10 py-6 shadow-md flex justify-between items-center">
+        <header class="bg-slate-900 text-white px-10 py-6 shadow-md flex justify-between items-center z-20">
             <div>
                 <span class="text-blue-400 font-bold tracking-wider text-base uppercase">Slide 5 : Operational Yield & Capacity Utilization</span>
                 <h1 class="text-4xl font-extrabold mt-2">Mismatch Kapasitas vs Yield</h1>
@@ -251,7 +261,7 @@
             </div>
             <i data-lucide="activity" class="text-emerald-400 w-14 h-14"></i>
         </header>
-        <main class="flex-1 p-10 flex flex-col md:flex-row gap-10 overflow-hidden">
+        <main class="flex-1 p-10 pb-28 flex flex-col md:flex-row gap-10 overflow-y-auto">
             <div class="w-full md:w-5/12 flex flex-col justify-center space-y-6">
                 <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
                     <h4 class="font-bold text-slate-800 text-xl mb-2 flex items-center"><i data-lucide="timer" class="w-6 h-6 mr-3 text-blue-500"></i> Yield Efficiency (Rp/Menit)</h4>
@@ -269,10 +279,10 @@
                     <p class="text-lg text-red-700 leading-relaxed">Jika Rika absen/resign, instan hilang 22% revenue. Sementara itu, fasilitas di hari Rabu & Kamis memiliki utilitas terendah (26 trx/3 bulan).</p>
                 </div>
             </div>
-            <div class="w-full md:w-7/12 bg-white rounded-2xl shadow-sm p-8 border border-slate-200 flex flex-col h-full">
+            <div class="w-full md:w-7/12 bg-white rounded-2xl shadow-sm p-8 border border-slate-200 flex flex-col h-full min-h-[400px]">
                 <h3 class="text-center font-bold text-slate-800 text-2xl mb-2">Matriks Kuadran Terapis (Yield vs Volume)</h3>
                 <p class="text-base text-center text-slate-500 mb-6">Mendeteksi tingkat efisiensi pendapatan dan risiko kelelahan kerja terapis</p>
-                <div class="relative flex-1 w-full min-h-[300px]">
+                <div class="relative flex-1 w-full min-h-[250px]">
                     <canvas id="chart5"></canvas>
                 </div>
             </div>
@@ -281,7 +291,7 @@
 
     <!-- SLIDE 6 -->
     <div class="slide" id="slide-6">
-        <header class="bg-slate-900 text-white px-10 py-6 shadow-md flex justify-between items-center">
+        <header class="bg-slate-900 text-white px-10 py-6 shadow-md flex justify-between items-center z-20">
             <div>
                 <span class="text-blue-400 font-bold tracking-wider text-base uppercase">Slide 6 : The 100-Day Turnaround Initiatives</span>
                 <h1 class="text-4xl font-extrabold mt-2">Action Plan: 3 Pilar Utama</h1>
@@ -289,7 +299,7 @@
             </div>
             <i data-lucide="rocket" class="text-yellow-400 w-14 h-14"></i>
         </header>
-        <main class="flex-1 p-10 flex flex-col md:flex-row gap-10 overflow-hidden">
+        <main class="flex-1 p-10 pb-28 flex flex-col md:flex-row gap-10 overflow-y-auto">
             <div class="w-full md:w-1/2 flex flex-col justify-center space-y-6">
                 <!-- Pillar 1 -->
                 <div class="bg-white p-6 rounded-xl shadow-sm border-l-8 border-l-purple-500">
@@ -311,9 +321,9 @@
                 </div>
             </div>
             
-            <div class="w-full md:w-1/2 bg-white rounded-2xl shadow-sm p-8 border border-slate-200 flex flex-col h-full">
+            <div class="w-full md:w-1/2 bg-white rounded-2xl shadow-sm p-8 border border-slate-200 flex flex-col h-full min-h-[400px]">
                 <h3 class="text-center font-bold text-slate-800 text-2xl mb-6">Priority Matrix (Impact vs Effort)</h3>
-                <div class="flex-1 relative bg-white matrix-grid">
+                <div class="flex-1 relative bg-white matrix-grid min-h-[300px]">
                     <div class="y-axis-label">Business Impact (Tinggi)</div>
                     
                     <!-- Quadrants -->
