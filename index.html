@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arum Raga Turnaround Strategy Deck</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #0f172a; overflow: hidden; margin: 0; }
+        .slide-container { position: relative; width: 100vw; height: 100vh; }
+        .slide {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.6s ease-in-out, transform 0.6s ease-in-out;
+            transform: translateY(20px);
+            background-color: #f8fafc;
+            display: flex;
+            flex-direction: column;
+        }
+        .slide.active {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateY(0);
+            z-index: 10;
+        }
+        .venn-circle {
+            width: 200px; height: 200px; border-radius: 50%;
+            position: absolute; top: 50%; transform: translateY(-50%);
+            mix-blend-multiply; opacity: 0.8;
+            display: flex; align-items: center; justify-content: center;
+            text-align: center; color: white; font-weight: bold; padding: 20px;
+        }
+        .matrix-grid {
+            display: grid; grid-template-columns: 50px 1fr 1fr; grid-template-rows: 1fr 1fr 50px;
+            width: 100%; height: 100%; gap: 4px;
+        }
+        .y-axis-label { grid-column: 1; grid-row: 1 / span 2; writing-mode: vertical-rl; transform: scale(-1); text-align: center; font-weight: bold; color: #64748b; }
+        .x-axis-label { grid-column: 2 / span 2; grid-row: 3; text-align: center; font-weight: bold; color: #64748b; margin-top: 10px; }
+        .quadrant { padding: 1rem; border-radius: 0.5rem; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; border: 2px dashed #cbd5e1; }
+        .q-high-low { background-color: #ecfdf5; border-color: #10b981; } /* Quick Wins */
+        .q-high-high { background-color: #eff6ff; border-color: #3b82f6; } /* Major Projects */
+        .q-low-low { background-color: #f8fafc; opacity: 0.6; } /* Fill ins */
+        .q-low-high { background-color: #fef2f2; opacity: 0.6; } /* Thankless */
+    </style>
+</head>
+<body>
+
+<div class="slide-container" id="deck">
+
+    <!-- SLIDE 1 -->
+    <div class="slide active" id="slide-1">
+        <header class="bg-slate-900 text-white px-8 py-5 shadow-md flex justify-between items-center">
+            <div>
+                <span class="text-blue-400 font-bold tracking-wider text-sm">SLIDE 1 : EXECUTIVE SUMMARY</span>
+                <h1 class="text-2xl font-extrabold mt-1">Reversing the Contraction</h1>
+                <p class="text-slate-300 text-sm">Menghentikan Kebocoran Pendapatan melalui Optimalisasi Retensi dan Cross-Selling</p>
+            </div>
+            <i data-lucide="trending-down" class="text-red-400 w-10 h-10"></i>
+        </header>
+        <main class="flex-1 p-8 flex flex-col md:flex-row gap-8 overflow-y-auto">
+            <div class="w-full md:w-5/12 space-y-6">
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-100 border-l-4 border-l-blue-500">
+                    <h3 class="font-bold text-slate-800 flex items-center gap-2"><i data-lucide="info" class="w-5 h-5 text-blue-500"></i> Current Situation</h3>
+                    <p class="text-sm text-slate-600 mt-2">Outlet berhasil mencetak ~Rp 79,6 Juta dengan 273 transaksi dalam 3 bulan terakhir. Arus pelanggan baru (Customer Acquisition) relatif sehat.</p>
+                </div>
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-100 border-l-4 border-l-red-500">
+                    <h3 class="font-bold text-slate-800 flex items-center gap-2"><i data-lucide="alert-triangle" class="w-5 h-5 text-red-500"></i> Complication (Pain Points)</h3>
+                    <p class="text-sm text-slate-600 mt-2">Bisnis mengalami penyusutan Top-Line Revenue progresif (-33% Des-Feb). Penurunan bukan hanya karena trafik, melainkan juga fenomena <strong class="text-red-600">"Leaky Bucket" (Churn 65,6%)</strong> dan degradasi daya beli (AOV turun 17%).</p>
+                </div>
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-100 border-l-4 border-l-emerald-500">
+                    <h3 class="font-bold text-slate-800 flex items-center gap-2"><i data-lucide="check-circle" class="w-5 h-5 text-emerald-500"></i> Resolution (Strategic Imperative)</h3>
+                    <p class="text-sm text-slate-600 mt-2">Fokus jangan hanya Acquisition tapi juga <strong>Customer Lifetime Value Maximization</strong> melalui 3 pilar: Lifecycle Management, Yield Optimization, dan Capacity Rebalancing.</p>
+                </div>
+            </div>
+            <div class="w-full md:w-7/12 bg-white rounded-xl shadow-sm p-6 border border-slate-200 flex flex-col">
+                <h3 class="text-center font-bold text-slate-800 mb-2">Kontraksi Pendapatan vs Transaksi (3 Bulan Terakhir)</h3>
+                <p class="text-xs text-center text-slate-500 mb-4">Tren menunjukkan penurunan simultan pada *Revenue* dan Volume</p>
+                <div class="relative flex-1 w-full max-h-[400px]">
+                    <canvas id="chart1"></canvas>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- SLIDE 2 -->
+    <div class="slide" id="slide-2">
+        <header class="bg-slate-900 text-white px-8 py-5 shadow-md flex justify-between items-center">
+            <div>
+                <span class="text-blue-400 font-bold tracking-wider text-sm">SLIDE 2 : TOP-LINE PERFORMANCE & REVENUE DRIVERS</span>
+                <h1 class="text-2xl font-extrabold mt-1">Degradasi Ticket Size & Downgrade Layanan</h1>
+                <p class="text-slate-300 text-sm">Penyusutan Revenue Sebesar 33% Didorong oleh Pergeseran ke Layanan Bermargin Rendah</p>
+            </div>
+            <i data-lucide="bar-chart-2" class="text-orange-400 w-10 h-10"></i>
+        </header>
+        <main class="flex-1 p-8 flex flex-col md:flex-row gap-8 overflow-y-auto">
+            <div class="w-full md:w-1/2 space-y-6">
+                <div class="space-y-4">
+                    <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-100">
+                        <h4 class="font-bold text-slate-800">📉 Tren Pendapatan & AOV Drop</h4>
+                        <p class="text-sm text-slate-600 mt-1">Kontraksi tajam dari Rp 32,4 Juta (Des) menjadi Rp 21,6 Juta (Feb). Rata-rata belanja per pelanggan (AOV) anjlok dari <strong>Rp 444.249</strong> menjadi <strong>Rp 366.103</strong>.</p>
+                    </div>
+                    <div class="bg-red-50 p-4 rounded-lg shadow-sm border border-red-100">
+                        <h4 class="font-bold text-red-800">⚠️ Akar Masalah (The Pain Point)</h4>
+                        <p class="text-sm text-red-700 mt-1">Distribusi harga membuktikan terjadinya <em>downgrade</em> preferensi. Pada Desember, 40% membeli layanan Premium (>Rp 300rb). Di Februari, porsi ini runtuh tersisa 16%. Pelanggan menahan budget (efek pasca-liburan).</p>
+                    </div>
+                    <div class="bg-blue-50 p-4 rounded-lg shadow-sm border border-blue-100">
+                        <h4 class="font-bold text-blue-800">💡 Strategic Implication</h4>
+                        <p class="text-sm text-blue-700 mt-1">Tidak bisa hanya mengandalkan volume. Diperlukan intervensi harga (bundling) untuk memaksa AOV kembali ke atas batas Rp 400.000.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="w-full md:w-1/2 bg-white rounded-xl shadow-sm p-6 border border-slate-200 flex flex-col">
+                <h3 class="text-center font-bold text-slate-800 mb-2">Distribusi Transaksi Berdasarkan Kelas Harga (100% Stacked)</h3>
+                <p class="text-xs text-center text-slate-500 mb-4">Penyusutan drastis pada area layanan Premium</p>
+                <div class="relative flex-1 w-full max-h-[400px]">
+                    <canvas id="chart2"></canvas>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- SLIDE 3 -->
+    <div class="slide" id="slide-3">
+        <header class="bg-slate-900 text-white px-8 py-5 shadow-md flex justify-between items-center">
+            <div>
+                <span class="text-blue-400 font-bold tracking-wider text-sm">SLIDE 3 : CUSTOMER LIFECYCLE & RETENTION</span>
+                <h1 class="text-2xl font-extrabold mt-1">Fenomena "Leaky Bucket"</h1>
+                <p class="text-slate-300 text-sm">Tingkat Akuisisi Tinggi Dinetralisir oleh 65% Churn Rate pada Kunjungan Pertama</p>
+            </div>
+            <i data-lucide="users" class="text-purple-400 w-10 h-10"></i>
+        </header>
+        <main class="flex-1 p-8 flex flex-col md:flex-row gap-8 overflow-y-auto">
+            <div class="w-full md:w-1/2 bg-white rounded-xl shadow-sm p-6 border border-slate-200 flex flex-col justify-center items-center">
+                <h3 class="text-center font-bold text-slate-800 mb-2">Komposisi Retensi Pelanggan</h3>
+                <div class="relative w-full max-w-[350px] aspect-square">
+                    <canvas id="chart3"></canvas>
+                    <div class="absolute inset-0 flex items-center justify-center flex-col pointer-events-none">
+                        <span class="text-3xl font-black text-red-500">65.6%</span>
+                        <span class="text-xs font-bold text-slate-500">CHURN RATE</span>
+                    </div>
+                </div>
+                
+                <!-- Heatmap Table -->
+                <div class="mt-6 w-full">
+                    <h4 class="text-xs font-bold text-slate-500 mb-2 uppercase tracking-wide">Cohort Retention Heatmap</h4>
+                    <table class="w-full text-sm text-center border-collapse">
+                        <thead>
+                            <tr class="bg-slate-100 text-slate-600">
+                                <th class="p-2 border border-slate-200">Bulan Akuisisi</th>
+                                <th class="p-2 border border-slate-200">Bulan 1 (Retained)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="p-2 border border-slate-200 font-medium">Desember (73 Cust)</td>
+                                <td class="p-2 border border-slate-200 bg-red-100 text-red-700 font-bold">21.9%</td>
+                            </tr>
+                            <tr>
+                                <td class="p-2 border border-slate-200 font-medium">Januari</td>
+                                <td class="p-2 border border-slate-200 bg-red-200 text-red-800 font-bold">10.2%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="w-full md:w-1/2 space-y-6 flex flex-col justify-center">
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-100">
+                    <h4 class="font-bold text-slate-800 text-lg">Key Insights</h4>
+                    <ul class="list-disc pl-5 mt-3 space-y-2 text-slate-600">
+                        <li><strong>High Churn (Kematian LTV):</strong> Dari 160 pelanggan unik, 105 orang (65,6%) adalah pembeli satu kali (One-Time Buyers).</li>
+                        <li><strong>Poor Cohort Retention:</strong> Retensi menurun drastis dari 21.9% (Cohort Des) menjadi hanya 10.2% (Cohort Jan).</li>
+                    </ul>
+                </div>
+                <div class="bg-red-50 p-5 rounded-xl border border-red-200">
+                    <h4 class="font-bold text-red-800">The Pain Point</h4>
+                    <p class="text-sm text-red-700 mt-2">Pengalaman pelanggan di titik layanan gagal dikonversi menjadi loyalitas. Customer Lifetime Value (CLV) sangat rendah, membuat investasi marketing memiliki Negative ROI.</p>
+                </div>
+                <div class="bg-emerald-50 p-5 rounded-xl border border-emerald-200">
+                    <h4 class="font-bold text-emerald-800">Strategic Implication</h4>
+                    <p class="text-sm text-emerald-700 mt-2">Implementasi <strong>Lock-in Strategy</strong> (Program Membership atau Advance Booking Discount) adalah kewajiban operasional, bukan lagi opsi.</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- SLIDE 4 -->
+    <div class="slide" id="slide-4">
+        <header class="bg-slate-900 text-white px-8 py-5 shadow-md flex justify-between items-center">
+            <div>
+                <span class="text-blue-400 font-bold tracking-wider text-sm">SLIDE 4 : WALLET SHARE & MARKET BASKET</span>
+                <h1 class="text-2xl font-extrabold mt-1">Silo Produk Ekstrem & Minimnya Cross-Selling</h1>
+                <p class="text-slate-300 text-sm">Tingkat Cross-Pollination Antar Departemen Hanya Berada di Angka 10,6%</p>
+            </div>
+            <i data-lucide="shopping-bag" class="text-pink-400 w-10 h-10"></i>
+        </header>
+        <main class="flex-1 p-8 flex flex-col md:flex-row gap-8 overflow-y-auto">
+            <div class="w-full md:w-1/2 space-y-6">
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-100">
+                    <h4 class="font-bold text-slate-800 text-lg">Key Insights</h4>
+                    <p class="text-sm text-slate-600 mt-3"><strong>Siloed Departments:</strong> 89,4% pelanggan sangat terkotak-kotak. Pelanggan pijat hanya membeli pijat, pelanggan kecantikan hanya membeli kecantikan.</p>
+                    <p class="text-sm text-slate-600 mt-2"><strong>Missed Opportunity:</strong> Hanya 17 dari 160 pelanggan (10,6%) yang berhasil diekspos ke lebih dari satu kategori layanan.</p>
+                </div>
+                <div class="bg-red-50 p-5 rounded-xl border border-red-200">
+                    <h4 class="font-bold text-red-800">The Pain Point</h4>
+                    <p class="text-sm text-red-700 mt-2">Tidak ada sistem Upselling terstruktur. Bisnis membiarkan <em>"money left on the table"</em> dengan tidak menawarkan layanan silang kepada <em>captive audience</em>.</p>
+                </div>
+                <div class="bg-blue-50 p-5 rounded-xl border border-blue-200">
+                    <h4 class="font-bold text-blue-800">Strategic Implication</h4>
+                    <p class="text-sm text-blue-700 mt-2">Ciptakan <strong>"Hero Bundles"</strong> (Misal: Massage + Facial atau Reflexy + Nails) untuk mendobrak sekat ini.</p>
+                </div>
+            </div>
+            <div class="w-full md:w-1/2 bg-white rounded-xl shadow-sm p-6 border border-slate-200 flex flex-col justify-center items-center relative overflow-hidden">
+                <h3 class="text-center font-bold text-slate-800 mb-8 z-10">Cross-Pollination Departemen (Venn Diagram)</h3>
+                
+                <div class="relative w-[350px] h-[300px] flex justify-center mt-4">
+                    <!-- Circle 1 -->
+                    <div class="venn-circle bg-blue-500 left-0 shadow-lg flex-col">
+                        <span class="text-sm uppercase tracking-wider opacity-90">Pijat & Facial</span>
+                    </div>
+                    <!-- Circle 2 -->
+                    <div class="venn-circle bg-pink-500 right-0 shadow-lg flex-col">
+                        <span class="text-sm uppercase tracking-wider opacity-90">Beauty & Nails</span>
+                    </div>
+                    <!-- Intersection Label -->
+                    <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20 flex flex-col items-center bg-white/90 p-3 rounded-full shadow-md border border-slate-200">
+                        <span class="font-black text-slate-800 text-xl">10.6%</span>
+                        <span class="text-[10px] font-bold text-slate-500 leading-tight">CROSS<br>BUYERS</span>
+                        <span class="text-[9px] text-slate-400 mt-1">(17 Orang)</span>
+                    </div>
+                </div>
+                <p class="text-xs text-center text-slate-500 mt-8 z-10 max-w-sm">Irisan yang sangat kecil menunjukkan kegagalan <em>cross-selling</em> antar departemen secara fundamental.</p>
+            </div>
+        </main>
+    </div>
+
+    <!-- SLIDE 5 -->
+    <div class="slide" id="slide-5">
+        <header class="bg-slate-900 text-white px-8 py-5 shadow-md flex justify-between items-center">
+            <div>
+                <span class="text-blue-400 font-bold tracking-wider text-sm">SLIDE 5 : OPERATIONAL YIELD & CAPACITY UTILIZATION</span>
+                <h1 class="text-2xl font-extrabold mt-1">Mismatch Kapasitas vs Yield</h1>
+                <p class="text-slate-300 text-sm">Terapis High-Value Kurang Diutilisasi, Terapis Utama Menghadapi Risiko Burnout</p>
+            </div>
+            <i data-lucide="activity" class="text-emerald-400 w-10 h-10"></i>
+        </header>
+        <main class="flex-1 p-8 flex flex-col md:flex-row gap-8 overflow-y-auto">
+            <div class="w-full md:w-5/12 space-y-4">
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100">
+                    <h4 class="font-bold text-slate-800"><i data-lucide="timer" class="inline w-4 h-4 mr-1"></i> Yield Efficiency (Rp/Menit)</h4>
+                    <p class="text-sm text-slate-600 mt-1">Facial adalah "mesin uang" efisien (Rp 6.749/menit), disusul Beauty/Nails (Rp 4.073) dan Massage (Rp 3.654).</p>
+                </div>
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100">
+                    <h4 class="font-bold text-slate-800"><i data-lucide="user-check" class="inline w-4 h-4 mr-1"></i> Talent Utilization</h4>
+                    <ul class="text-sm text-slate-600 mt-1 list-disc pl-4">
+                        <li><strong>Putri:</strong> Yield tertinggi (Rp 5.196/menit), namun volume sedang (47 trx).</li>
+                        <li><strong>Rika:</strong> Bottleneck kapasitas (72 trx sendirian), penyumbang 22% total revenue.</li>
+                    </ul>
+                </div>
+                <div class="bg-red-50 p-4 rounded-xl border border-red-200">
+                    <h4 class="font-bold text-red-800">The Pain Point (Key-Person Risk)</h4>
+                    <p class="text-sm text-red-700 mt-1">Jika Rika absen/resign, instan hilang 22% revenue. Sementara itu, fasilitas di hari Rabu & Kamis utilitasnya terendah (hanya 26 trx dalam 3 bulan).</p>
+                </div>
+            </div>
+            <div class="w-full md:w-7/12 bg-white rounded-xl shadow-sm p-6 border border-slate-200 flex flex-col">
+                <h3 class="text-center font-bold text-slate-800 mb-1">Matriks Kuadran Terapis (Yield vs Volume)</h3>
+                <p class="text-xs text-center text-slate-500 mb-4">Mendeteksi efisiensi dan risiko kelelahan kerja</p>
+                <div class="relative flex-1 w-full max-h-[400px]">
+                    <canvas id="chart5"></canvas>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- SLIDE 6 -->
+    <div class="slide" id="slide-6">
+        <header class="bg-slate-900 text-white px-8 py-5 shadow-md flex justify-between items-center">
+            <div>
+                <span class="text-blue-400 font-bold tracking-wider text-sm">SLIDE 6 : THE 100-DAY TURNAROUND INITIATIVES</span>
+                <h1 class="text-2xl font-extrabold mt-1">Action Plan: 3 Pilar Utama</h1>
+                <p class="text-slate-300 text-sm">Mengembalikan Trajektori Pertumbuhan yang Menguntungkan (Profitable Growth)</p>
+            </div>
+            <i data-lucide="rocket" class="text-yellow-400 w-10 h-10"></i>
+        </header>
+        <main class="flex-1 p-6 flex flex-col md:flex-row gap-6 overflow-y-auto">
+            <div class="w-full md:w-1/2 space-y-4">
+                <!-- Pillar 1 -->
+                <div class="bg-white p-4 rounded-lg shadow-sm border-l-4 border-l-purple-500">
+                    <h3 class="font-bold text-slate-800 text-lg">1. Defend the Base <span class="text-sm font-normal text-slate-500">(Retention)</span></h3>
+                    <p class="text-sm text-slate-700 mt-1"><strong>Inisiatif:</strong> <em>Bounce-Back Voucher</em> otomatis (Diskon 15% di struk kasir, berlaku 30 hari).</p>
+                    <p class="text-sm text-purple-700 font-semibold mt-1">Target: Churn One-Time Buyer turun < 45%.</p>
+                </div>
+                <!-- Pillar 2 -->
+                <div class="bg-white p-4 rounded-lg shadow-sm border-l-4 border-l-blue-500">
+                    <h3 class="font-bold text-slate-800 text-lg">2. Expand the Wallet <span class="text-sm font-normal text-slate-500">(Yield & AOV)</span></h3>
+                    <p class="text-sm text-slate-700 mt-1"><strong>Inisiatif:</strong> <em>Cross-Sell Playbook</em>. Wajib tawarkan Add-on (Facial) di 15mnt terakhir pijat. Paket "Ultimate Me-Time".</p>
+                    <p class="text-sm text-blue-700 font-semibold mt-1">Target: AOV kembali > Rp 400.000.</p>
+                </div>
+                <!-- Pillar 3 -->
+                <div class="bg-white p-4 rounded-lg shadow-sm border-l-4 border-l-emerald-500">
+                    <h3 class="font-bold text-slate-800 text-lg">3. Rebalance Capacity <span class="text-sm font-normal text-slate-500">(Agility)</span></h3>
+                    <p class="text-sm text-slate-700 mt-1"><strong>Inisiatif:</strong> <em>Dynamic Pricing</em>. Happy Hour (-20%) Rabu-Kamis 10:00-14:00. Rekrut asisten untuk Rika.</p>
+                    <p class="text-sm text-emerald-700 font-semibold mt-1">Target: Meratakan utilisasi harian & mitigasi Key-Person Risk.</p>
+                </div>
+            </div>
+            
+            <div class="w-full md:w-1/2 bg-white rounded-xl shadow-sm p-4 border border-slate-200 flex flex-col">
+                <h3 class="text-center font-bold text-slate-800 mb-2">Priority Matrix (Impact vs Effort)</h3>
+                <div class="flex-1 relative bg-white matrix-grid">
+                    <div class="y-axis-label">Business Impact (Tinggi)</div>
+                    
+                    <!-- Quadrants -->
+                    <div class="quadrant q-high-low relative">
+                        <span class="absolute top-2 left-2 text-xs font-bold text-emerald-700 bg-emerald-100 px-2 py-1 rounded">QUICK WINS</span>
+                        <p class="text-sm font-semibold text-slate-800 mt-4">Voucher Bounce-Back 15%</p>
+                        <p class="text-xs text-slate-600 mt-1">Eksekusi besok di Kasir</p>
+                    </div>
+                    <div class="quadrant q-high-high relative">
+                        <span class="absolute top-2 right-2 text-xs font-bold text-blue-700 bg-blue-100 px-2 py-1 rounded">MAJOR PROJECTS</span>
+                        <p class="text-sm font-semibold text-slate-800 mt-4">Rilis Membership & Rekrut Asisten</p>
+                        <p class="text-xs text-slate-600 mt-1">Butuh waktu & budget</p>
+                    </div>
+                    <div class="quadrant q-low-low relative">
+                        <span class="absolute bottom-2 left-2 text-xs font-bold text-slate-500">FILL INS</span>
+                        <p class="text-xs text-slate-400">Penyesuaian BGM Outlet</p>
+                    </div>
+                    <div class="quadrant q-low-high relative">
+                        <span class="absolute bottom-2 right-2 text-xs font-bold text-slate-500">THANKLESS</span>
+                        <p class="text-xs text-slate-400">Renovasi Ruang Tunggu</p>
+                    </div>
+                    
+                    <div class="x-axis-label">Implementation Effort (Rendah ke Tinggi) &rarr;</div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Navigation Controls -->
+    <div class="absolute bottom-0 left-0 w-full bg-white border-t border-slate-200 px-6 py-3 flex justify-between items-center z-50">
+        <div class="flex gap-2">
+            <button id="prevBtn" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded font-semibold text-sm transition-colors flex items-center gap-2 disabled:opacity-50">
+                <i data-lucide="chevron-left" class="w-4 h-4"></i> Prev
+            </button>
+            <button id="nextBtn" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded font-semibold text-sm transition-colors flex items-center gap-2">
+                Next <i data-lucide="chevron-right" class="w-4 h-4"></i>
+            </button>
+        </div>
+        <div class="text-slate-500 font-medium text-sm">
+            Slide <span id="currentSlideNum">1</span> of 6
+        </div>
+    </div>
+</div>
+
+<script>
+    // Initialize Icons
+    lucide.createIcons();
+
+    // Slide Navigation Logic
+    let currentSlideIndex = 1;
+    const totalSlides = 6;
+
+    function updateSlides() {
+        for (let i = 1; i <= totalSlides; i++) {
+            const slide = document.getElementById(`slide-${i}`);
+            if (i === currentSlideIndex) {
+                slide.classList.add('active');
+            } else {
+                slide.classList.remove('active');
+            }
+        }
+        document.getElementById('currentSlideNum').innerText = currentSlideIndex;
+        document.getElementById('prevBtn').disabled = currentSlideIndex === 1;
+        document.getElementById('nextBtn').disabled = currentSlideIndex === totalSlides;
+    }
+
+    document.getElementById('prevBtn').addEventListener('click', () => {
+        if (currentSlideIndex > 1) {
+            currentSlideIndex--;
+            updateSlides();
+        }
+    });
+
+    document.getElementById('nextBtn').addEventListener('click', () => {
+        if (currentSlideIndex < totalSlides) {
+            currentSlideIndex++;
+            updateSlides();
+        }
+    });
+
+    // Keyboard Navigation
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight') document.getElementById('nextBtn').click();
+        if (e.key === 'ArrowLeft') document.getElementById('prevBtn').click();
+    });
+
+    // --- CHART.JS INITIALIZATIONS ---
+
+    // Global Defaults
+    Chart.defaults.font.family = "'Inter', sans-serif";
+    Chart.defaults.color = '#64748b';
+
+    // Slide 1: Combo Chart (Revenue vs Transactions)
+    const ctx1 = document.getElementById('chart1').getContext('2d');
+    new Chart(ctx1, {
+        type: 'bar',
+        data: {
+            labels: ['Desember', 'Januari', 'Februari'],
+            datasets: [
+                {
+                    label: 'Total Transaksi (Volume)',
+                    data: [101, 92, 80],
+                    type: 'line',
+                    borderColor: '#ef4444',
+                    backgroundColor: '#ef4444',
+                    borderWidth: 3,
+                    tension: 0.3,
+                    yAxisID: 'y1',
+                    markerType: 'circle',
+                    pointRadius: 6
+                },
+                {
+                    label: 'Pendapatan (Juta Rp)',
+                    data: [32.4, 25.6, 21.6],
+                    backgroundColor: 'rgba(59, 130, 246, 0.8)',
+                    borderRadius: 4,
+                    yAxisID: 'y'
+                }
+            ]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            interaction: { mode: 'index', intersect: false },
+            scales: {
+                y: { type: 'linear', display: true, position: 'left', title: { display: true, text: 'Pendapatan (Juta)' } },
+                y1: { type: 'linear', display: true, position: 'right', grid: { drawOnChartArea: false }, title: { display: true, text: 'Total Transaksi' }, min: 50, max: 120 }
+            },
+            plugins: { legend: { position: 'top' } }
+        }
+    });
+
+    // Slide 2: 100% Stacked Bar
+    const ctx2 = document.getElementById('chart2').getContext('2d');
+    new Chart(ctx2, {
+        type: 'bar',
+        data: {
+            labels: ['Desember', 'Januari', 'Februari'],
+            datasets: [
+                { label: 'Kelas Premium (> Rp 300rb)', data: [40, 27, 16], backgroundColor: '#8b5cf6', borderRadius: {topLeft: 4, topRight: 4} },
+                { label: 'Kelas Basic (≤ Rp 300rb)', data: [60, 73, 84], backgroundColor: '#e2e8f0', borderRadius: {bottomLeft: 4, bottomRight: 4} }
+            ]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            scales: {
+                x: { stacked: true },
+                y: { stacked: true, max: 100, title: { display: true, text: 'Persentase (%)' } }
+            },
+            plugins: { legend: { position: 'top' }, tooltip: { callbacks: { label: (context) => context.dataset.label + ': ' + context.raw + '%' } } }
+        }
+    });
+
+    // Slide 3: Donut Chart
+    const ctx3 = document.getElementById('chart3').getContext('2d');
+    new Chart(ctx3, {
+        type: 'doughnut',
+        data: {
+            labels: ['One-Time Buyers (1 Kali)', 'Repeat Customers'],
+            datasets: [{
+                data: [65.6, 34.4],
+                backgroundColor: ['#ef4444', '#10b981'],
+                borderWidth: 0,
+                hoverOffset: 4
+            }]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false, cutout: '75%',
+            plugins: { legend: { position: 'bottom' } }
+        }
+    });
+
+    // Slide 5: Scatter Plot (Yield vs Volume)
+    const ctx5 = document.getElementById('chart5').getContext('2d');
+    new Chart(ctx5, {
+        type: 'scatter',
+        data: {
+            datasets: [
+                { label: 'Putri (High Yield)', data: [{ x: 47, y: 5196 }], backgroundColor: '#10b981', pointRadius: 10, pointHoverRadius: 12 },
+                { label: 'Rika (Bottleneck)', data: [{ x: 72, y: 4073 }], backgroundColor: '#ef4444', pointRadius: 10, pointHoverRadius: 12 },
+                { label: 'Indah / Arfin / Hilda (Mid-Low)', data: [ { x: 35, y: 3500 }, { x: 40, y: 3200 }, { x: 26, y: 3000 } ], backgroundColor: '#94a3b8', pointRadius: 8 }
+            ]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            scales: {
+                x: { title: { display: true, text: 'Volume Transaksi (Jumlah)' }, min: 10, max: 80 },
+                y: { title: { display: true, text: 'Yield / Efisiensi (Rp per Menit)' }, min: 2000, max: 6000 }
+            },
+            plugins: {
+                legend: { position: 'bottom' },
+                tooltip: {
+                    callbacks: {
+                        label: (ctx) => `${ctx.dataset.label}: ${ctx.raw.x} Trx, Rp ${ctx.raw.y}/mnt`
+                    }
+                },
+                // Custom drawing for Quadrant lines
+            }
+        },
+        plugins: [{
+            id: 'quadrantLines',
+            beforeDraw(chart) {
+                const { ctx, chartArea: { top, bottom, left, right }, scales: { x, y } } = chart;
+                const midX = x.getPixelForValue(45); // Mid Volume threshold
+                const midY = y.getPixelForValue(4000); // Mid Yield threshold
+                
+                ctx.save();
+                ctx.beginPath();
+                ctx.lineWidth = 2; ctx.strokeStyle = 'rgba(203, 213, 225, 0.5)'; ctx.setLineDash([5, 5]);
+                // Vertical Line
+                ctx.moveTo(midX, top); ctx.lineTo(midX, bottom);
+                // Horizontal Line
+                ctx.moveTo(left, midY); ctx.lineTo(right, midY);
+                ctx.stroke(); ctx.restore();
+            }
+        }]
+    });
+
+    // Initialization trigger
+    updateSlides();
+</script>
+</body>
+</html>
