@@ -14,17 +14,15 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     
     <style>
-        /* Body dikunci menjadi flexbox center untuk menempatkan canvas tepat di tengah */
+        /* Body tidak lagi menggunakan flexbox untuk mencegah cropping layout */
         body { 
             font-family: 'Inter', sans-serif; 
             background-color: #0f172a; 
             overflow: hidden; 
             margin: 0; 
+            padding: 0;
             width: 100vw; 
             height: 100vh; 
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
         
         /* Custom Scrollbar */
@@ -33,15 +31,17 @@
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
-        /* Canvas Layout - Terkunci 16:9 (1440x810) */
+        /* Canvas Layout - Terkunci 16:9 (1440x810) & Absolute Positioning */
         .slide-container { 
-            position: relative;
+            position: absolute; /* Ubah ke absolute */
+            left: 0; /* Mulai dari pojok kiri atas untuk menghindari flexbox clipping */
+            top: 0;
             width: 1440px; 
             height: 810px; 
             background-color: #f8fafc;
             overflow: hidden; 
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            transform-origin: center center; /* Titik tumpu zoom */
+            transform-origin: top left; /* Titik tumpu zoom dipindah ke pojok kiri atas */
             display: flex;
             flex-direction: column;
         }
@@ -75,7 +75,8 @@
         .venn-circle {
             width: 240px; height: 240px; border-radius: 50%;
             position: absolute; top: 50%; transform: translateY(-50%);
-            mix-blend-multiply; opacity: 0.8;
+            mix-blend-mode: multiply; /* Diperbaiki dari mix-blend-multiply */
+            opacity: 0.8;
             display: flex; align-items: center; justify-content: center;
             text-align: center; color: white; font-weight: bold; padding: 20px;
         }
@@ -447,20 +448,27 @@
 </div>
 
 <script>
-    // --- DECK SCALING LOGIC (FIT TO PAGE) ---
+    // --- DECK SCALING LOGIC (FIT TO PAGE) FIXED ---
     function resizeDeck() {
         const deck = document.getElementById('deck');
-        const windowWidth = window.innerWidth;
-        const windowHeight = window.innerHeight;
         
-        // Resolusi virtual dasar presentasi
+        // Menggunakan dimensi viewport yang paling akurat (hindari konflik dengan padding/margin dari iframe Github)
+        const windowWidth = window.innerWidth || document.documentElement.clientWidth;
+        const windowHeight = window.innerHeight || document.documentElement.clientHeight;
+        
+        // Resolusi virtual dasar presentasi (Fixed 16:9)
         const deckWidth = 1440;
         const deckHeight = 810;
         
-        // Hitung skala agar pas tepat di tengah layar tanpa ada yang terpotong
+        // Hitung skala minimum (agar lebar & tinggi selalu pas tanpa kepotong)
         const scale = Math.min(windowWidth / deckWidth, windowHeight / deckHeight);
         
-        deck.style.transform = `scale(${scale})`;
+        // Hitung offset agar elemen tepat berada di tengah secara matematika murni
+        // Tanpa harus bergantung pada flexbox yang terkadang memotong overflow
+        const xOffset = (windowWidth - (deckWidth * scale)) / 2;
+        const yOffset = (windowHeight - (deckHeight * scale)) / 2;
+        
+        deck.style.transform = `translate(${xOffset}px, ${yOffset}px) scale(${scale})`;
     }
     
     // Jalankan auto-scale
