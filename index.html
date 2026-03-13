@@ -14,7 +14,7 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #0f172a; overflow: hidden; margin: 0; }
+        body { font-family: 'Inter', sans-serif; background-color: #0f172a; overflow: hidden; margin: 0; width: 100vw; height: 100vh; position: relative; }
         
         /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 8px; }
@@ -22,7 +22,17 @@
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
-        .slide-container { position: relative; width: 100vw; height: 100vh; }
+        .slide-container { 
+            position: absolute; 
+            top: 50%; 
+            left: 50%; 
+            width: 1440px; 
+            height: 810px; 
+            background-color: #f8fafc;
+            overflow: hidden; 
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            /* Transform akan diatur oleh JavaScript agar responsive (Fit to Page) */
+        }
         .slide {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -233,7 +243,6 @@
                 <h3 class="text-center font-bold text-slate-800 text-2xl mb-8 z-10">Cross-Pollination Departemen (Venn Diagram)</h3>
                 
                 <div class="relative w-full max-w-[400px] h-[300px] flex justify-center mt-4">
-                    <!-- CSS Venn Diagram -->
                     <div class="venn-circle bg-blue-500 left-0 shadow-lg flex-col">
                         <span class="text-lg uppercase tracking-wider opacity-90">Pijat & Facial</span>
                     </div>
@@ -286,11 +295,57 @@
         </main>
     </div>
 
-    <!-- SLIDE 6 -->
+    <!-- SLIDE 6 (NEW) -->
     <div class="slide" id="slide-6">
         <header class="bg-slate-900 text-white px-10 py-6 shadow-md flex justify-between items-center z-20 shrink-0">
             <div class="pr-4">
-                <span class="text-blue-400 font-bold tracking-wider text-base uppercase">Slide 6 : The 100-Day Turnaround Initiatives</span>
+                <span class="text-blue-400 font-bold tracking-wider text-base uppercase">Slide 6 : Product Portfolio & Marketing Prioritization</span>
+                <h1 class="text-3xl lg:text-4xl font-extrabold mt-2">Prioritaskan Ad Spend pada Layanan High-Yield</h1>
+                <p class="text-slate-300 text-lg mt-1">Mengekstrak "Hidden Goldmine" untuk Memaksimalkan Profitabilitas Kapasitas</p>
+            </div>
+            <i data-lucide="pie-chart" class="text-yellow-400 w-14 h-14 shrink-0"></i>
+        </header>
+        <main class="flex-1 p-10 pb-28 flex flex-col md:flex-row gap-10 overflow-y-auto">
+            <div class="w-full md:w-5/12 flex flex-col justify-center space-y-6">
+                <!-- Gunakan gaya styling box yang sama persis -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 border-l-8 border-l-blue-500">
+                    <h4 class="font-bold text-slate-800 text-xl flex items-center gap-3">💰 The Cash Cow (Pijat)</h4>
+                    <p class="text-lg text-slate-600 mt-2 leading-relaxed">Tulang punggung utama (<strong>182 Trx</strong>). Namun, mempromosikan layanan ini secara berlebihan memakan slot kapasitas ruang yang masif.</p>
+                </div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 border-l-8 border-l-emerald-500">
+                    <h4 class="font-bold text-slate-800 text-xl flex items-center gap-3">✨ The Hidden Goldmine (Facial)</h4>
+                    <p class="text-lg text-slate-600 mt-2 leading-relaxed">Mencetak Efisiensi Waktu Tertinggi (<strong>Rp 6.749/mnt</strong>)—hampir 2x lipat lebih efisien. Ironisnya transaksi sangat kecil (17 Trx).</p>
+                </div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 border-l-8 border-l-red-500">
+                    <h4 class="font-bold text-slate-800 text-xl flex items-center gap-3">⚠️ The Capacity Trap (Kecantikan)</h4>
+                    <p class="text-lg text-slate-600 mt-2 leading-relaxed">Volume tinggi (<strong>72 Trx</strong>), tapi rentan <em>bottleneck</em> karena bergantung pada 1 staf terapis.</p>
+                </div>
+                
+                <!-- NEW STRATEGIC IMPLICATION BOX -->
+                <div class="bg-blue-50 p-6 rounded-2xl shadow-sm border border-blue-200">
+                    <h4 class="font-bold text-blue-800 text-xl mb-3">💡 Strategic Implication (Marketing Action Plan)</h4>
+                    <ul class="space-y-4 text-lg text-blue-900 leading-relaxed">
+                        <li><strong>Prioritas 1 (Acquisition Ads):</strong> Kampanyekan layanan Facial dan <em>"Hero Bundles"</em> (Massage + Facial) ke audiens baru karena ini adalah "Mesin Profit" paling efisien tanpa menghabiskan slot waktu terapis secara masif.</li>
+                        <li><strong>Prioritas 2 (Cross-Sell / No-Ads):</strong> Layanan Kecantikan tidak perlu diiklankan keluar, cukup dijual ke dalam (<em>In-store marketing</em>) kepada tamu Pijat.</li>
+                    </ul>
+                </div>
+
+            </div>
+            <div class="w-full md:w-7/12 bg-white rounded-2xl shadow-sm p-8 border border-slate-200 flex flex-col h-full min-h-[400px]">
+                <h3 class="text-center font-bold text-slate-800 text-2xl mb-2">Product Portfolio Bubble Chart</h3>
+                <p class="text-base text-center text-slate-500 mb-6">Sumbu X (Volume) | Sumbu Y (Yield/Menit) | Ukuran Gelembung (Total Pendapatan)</p>
+                <div class="relative flex-1 w-full min-h-[250px]">
+                    <canvas id="chart6"></canvas>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- SLIDE 7 (Formerly Slide 6) -->
+    <div class="slide" id="slide-7">
+        <header class="bg-slate-900 text-white px-10 py-6 shadow-md flex justify-between items-center z-20 shrink-0">
+            <div class="pr-4">
+                <span class="text-blue-400 font-bold tracking-wider text-base uppercase">Slide 7 : The 100-Day Turnaround Initiatives</span>
                 <h1 class="text-3xl lg:text-4xl font-extrabold mt-2">3 Pilar Utama Turnaround</h1>
                 <p class="text-slate-300 text-lg mt-1">Sinergi Marketing & CX dalam 100 Hari ke Depan</p>
             </div>
@@ -360,18 +415,38 @@
             </button>
         </div>
         <div class="text-slate-600 font-bold text-lg">
-            Slide <span id="currentSlideNum">1</span> of 6
+            Slide <span id="currentSlideNum">1</span> of 7
         </div>
     </div>
 </div>
 
 <script>
+    // --- DECK SCALING LOGIC (FIT TO PAGE) ---
+    function resizeDeck() {
+        const deck = document.getElementById('deck');
+        const windowWidth = window.innerWidth;
+        const windowHeight = window.innerHeight;
+        
+        // Resolusi virtual dasar presentasi (Aspect Ratio 16:9 yang luas)
+        const deckWidth = 1440;
+        const deckHeight = 810;
+        
+        // Hitung skala agar pas tepat di tengah layar tanpa ada yang terpotong
+        const scale = Math.min(windowWidth / deckWidth, windowHeight / deckHeight);
+        
+        deck.style.transform = `translate(-50%, -50%) scale(${scale})`;
+    }
+    
+    window.addEventListener('resize', resizeDeck);
+    resizeDeck(); // Jalankan auto-scale saat file pertama kali dimuat
+    // ----------------------------------------
+
     // Initialize Icons
     lucide.createIcons();
 
     // Slide Navigation Logic
     let currentSlideIndex = 1;
-    const totalSlides = 6;
+    const totalSlides = 7;
 
     function updateSlides() {
         for (let i = 1; i <= totalSlides; i++) {
@@ -541,6 +616,61 @@
                 ctx.stroke(); ctx.restore();
             }
         }]
+    });
+
+    // Slide 6: Bubble Chart (Product Portfolio)
+    const ctx6 = document.getElementById('chart6').getContext('2d');
+    new Chart(ctx6, {
+        type: 'bubble',
+        data: {
+            datasets: [
+                {
+                    label: 'Pijat (Cash Cow)',
+                    data: [{ x: 182, y: 3654, r: 35 }],
+                    backgroundColor: 'rgba(59, 130, 246, 0.7)', // Blue
+                    borderColor: 'rgb(37, 99, 235)',
+                    borderWidth: 2
+                },
+                {
+                    label: 'Facial (Hidden Goldmine)',
+                    data: [{ x: 17, y: 6749, r: 12 }],
+                    backgroundColor: 'rgba(16, 185, 129, 0.8)', // Emerald
+                    borderColor: 'rgb(5, 150, 105)',
+                    borderWidth: 2
+                },
+                {
+                    label: 'Kecantikan (Capacity Trap)',
+                    data: [{ x: 72, y: 4073, r: 20 }],
+                    backgroundColor: 'rgba(239, 68, 68, 0.7)', // Red
+                    borderColor: 'rgb(220, 38, 38)',
+                    borderWidth: 2
+                }
+            ]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            scales: {
+                x: { 
+                    title: { display: true, text: 'Volume Transaksi (Seberapa Laris)', font: {size: 16, weight: 'bold'} },
+                    min: 0, max: 200
+                },
+                y: { 
+                    title: { display: true, text: 'Yield (Rp/Menit - Menguntungkan)', font: {size: 16, weight: 'bold'} },
+                    min: 3000, max: 7500
+                }
+            },
+            plugins: {
+                legend: { position: 'bottom', labels: { font: {size: 16} } },
+                tooltip: {
+                    titleFont: {size: 16}, bodyFont: {size: 15},
+                    callbacks: {
+                        label: function(context) {
+                            return `${context.dataset.label}: Vol ${context.raw.x} Trx | Yield Rp ${context.raw.y}/mnt`;
+                        }
+                    }
+                }
+            }
+        }
     });
 
     // Initialization trigger
