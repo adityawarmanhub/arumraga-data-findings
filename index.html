@@ -14,36 +14,33 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     
     <style>
-        /* Body tidak lagi menggunakan flexbox untuk mencegah cropping layout */
+        /* Body tidak lagi menggunakan flexbox. 
+           Kita gunakan absolute positioning agar JS bisa menaruhnya tepat di tengah. */
         body { 
             font-family: 'Inter', sans-serif; 
-            background-color: #0f172a; 
+            background-color: #0f172a; /* Warna latar belakang luar (canvas backdrop) */
             overflow: hidden; 
             margin: 0; 
             padding: 0;
             width: 100vw; 
             height: 100vh; 
+            position: relative;
         }
-        
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
-        /* Canvas Layout - Terkunci 16:9 (1440x810) & Absolute Positioning */
+        /* Canvas Layout - Terkunci 16:9 (1440x810) */
         .slide-container { 
-            position: absolute; /* Ubah ke absolute */
-            left: 0; /* Mulai dari pojok kiri atas untuk menghindari flexbox clipping */
-            top: 0;
+            position: absolute;
+            left: 50%; /* Posisikan titik tengah x */
+            top: 50%;  /* Posisikan titik tengah y */
             width: 1440px; 
             height: 810px; 
             background-color: #f8fafc;
             overflow: hidden; 
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            transform-origin: top left; /* Titik tumpu zoom dipindah ke pojok kiri atas */
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.6);
+            transform-origin: center center; /* Tumpuan zoom di tengah */
             display: flex;
             flex-direction: column;
+            /* Transformasi scale & translate akan diurus JavaScript */
         }
 
         /* Area Slide Utama */
@@ -58,8 +55,8 @@
             top: 0; left: 0; width: 100%; height: 100%;
             opacity: 0;
             pointer-events: none;
-            transition: opacity 0.6s ease-in-out, transform 0.6s ease-in-out;
-            transform: translateY(20px);
+            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+            transform: translateY(15px);
             background-color: #f8fafc;
             display: flex;
             flex-direction: column;
@@ -73,20 +70,19 @@
 
         /* Elements CSS */
         .venn-circle {
-            width: 240px; height: 240px; border-radius: 50%;
+            width: 200px; height: 200px; border-radius: 50%;
             position: absolute; top: 50%; transform: translateY(-50%);
-            mix-blend-mode: multiply; /* Diperbaiki dari mix-blend-multiply */
-            opacity: 0.8;
+            mix-blend-mode: multiply; opacity: 0.8;
             display: flex; align-items: center; justify-content: center;
-            text-align: center; color: white; font-weight: bold; padding: 20px;
+            text-align: center; color: white; font-weight: bold; padding: 15px;
         }
         .matrix-grid {
-            display: grid; grid-template-columns: 60px 1fr 1fr; grid-template-rows: 1fr 1fr 60px;
+            display: grid; grid-template-columns: 40px 1fr 1fr; grid-template-rows: 1fr 1fr 40px;
             width: 100%; height: 100%; gap: 6px;
         }
-        .y-axis-label { grid-column: 1; grid-row: 1 / span 2; writing-mode: vertical-rl; transform: scale(-1); text-align: center; font-weight: bold; color: #64748b; font-size: 1.1rem; }
-        .x-axis-label { grid-column: 2 / span 2; grid-row: 3; text-align: center; font-weight: bold; color: #64748b; margin-top: 15px; font-size: 1.1rem; }
-        .quadrant { padding: 1.5rem; border-radius: 0.75rem; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; border: 2px dashed #cbd5e1; }
+        .y-axis-label { grid-column: 1; grid-row: 1 / span 2; writing-mode: vertical-rl; transform: scale(-1); text-align: center; font-weight: bold; color: #64748b; font-size: 0.9rem; }
+        .x-axis-label { grid-column: 2 / span 2; grid-row: 3; text-align: center; font-weight: bold; color: #64748b; margin-top: 10px; font-size: 0.9rem; }
+        .quadrant { padding: 1rem; border-radius: 0.75rem; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; border: 2px dashed #cbd5e1; }
         .q-high-low { background-color: #ecfdf5; border-color: #10b981; } /* Quick Wins */
         .q-high-high { background-color: #eff6ff; border-color: #3b82f6; } /* Major Projects */
         .q-low-low { background-color: #f8fafc; opacity: 0.6; } /* Fill ins */
@@ -102,38 +98,38 @@
 
         <!-- SLIDE 1 -->
         <div class="slide active" id="slide-1">
-            <header class="bg-slate-900 text-white px-10 py-6 shadow-md flex justify-between items-center z-20 shrink-0">
+            <header class="bg-slate-900 text-white px-8 py-5 shadow-md flex justify-between items-center z-20 shrink-0">
                 <div class="pr-4">
-                    <span class="text-blue-400 font-bold tracking-wider text-base uppercase">Slide 1 : Executive Summary</span>
-                    <h1 class="text-3xl lg:text-4xl font-extrabold mt-2">Rombakan Strategi Marketing & CX</h1>
-                    <p class="text-slate-300 text-lg mt-1">Diperlukan untuk Menghentikan Kontraksi Revenue (-33%)</p>
+                    <span class="text-blue-400 font-bold tracking-wider text-sm uppercase">Slide 1 : Executive Summary</span>
+                    <h1 class="text-2xl lg:text-3xl font-extrabold mt-1">Rombakan Strategi Marketing & CX</h1>
+                    <p class="text-slate-300 text-base mt-1">Diperlukan untuk Menghentikan Kontraksi Revenue (-33%)</p>
                 </div>
-                <i data-lucide="trending-down" class="text-red-400 w-14 h-14 shrink-0"></i>
+                <i data-lucide="trending-down" class="text-red-400 w-12 h-12 shrink-0"></i>
             </header>
-            <main class="flex-1 p-10 flex flex-col md:flex-row gap-10 overflow-y-auto">
-                <div class="w-full md:w-5/12 flex flex-col justify-center space-y-8">
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 border-l-8 border-l-blue-500">
-                        <h3 class="font-bold text-slate-800 text-xl flex items-center gap-3"><i data-lucide="info" class="w-7 h-7 text-blue-500"></i> Current Situation</h3>
-                        <p class="text-lg text-slate-600 mt-3 leading-relaxed"><strong>Q1 Revenue di Rp 79,6 Jt (273 Trx).</strong> Namun, mesin akuisisi mulai stagnan & gagal menarik segmen <em>High-Value</em>.</p>
+            <main class="flex-1 p-6 md:p-8 flex flex-col md:flex-row gap-6 md:gap-8 overflow-hidden">
+                <div class="w-full md:w-5/12 flex flex-col justify-center space-y-4">
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 border-l-8 border-l-blue-500">
+                        <h3 class="font-bold text-slate-800 text-lg flex items-center gap-3"><i data-lucide="info" class="w-6 h-6 text-blue-500"></i> Current Situation</h3>
+                        <p class="text-base text-slate-600 mt-2 leading-snug"><strong>Q1 Revenue di Rp 79,6 Jt (273 Trx).</strong> Namun, mesin akuisisi mulai stagnan & gagal menarik segmen <em>High-Value</em>.</p>
                     </div>
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 border-l-8 border-l-red-500">
-                        <h3 class="font-bold text-slate-800 text-xl flex items-center gap-3"><i data-lucide="alert-triangle" class="w-7 h-7 text-red-500"></i> The Complication</h3>
-                        <div class="text-lg text-slate-600 mt-3 leading-relaxed"><strong>Terjadi Penyusutan Progresif (-33% Des-Feb).</strong> Dipicu oleh 2 kelemahan sistemik:
-                            <ul class="list-disc pl-6 mt-2 space-y-1">
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 border-l-8 border-l-red-500">
+                        <h3 class="font-bold text-slate-800 text-lg flex items-center gap-3"><i data-lucide="alert-triangle" class="w-6 h-6 text-red-500"></i> The Complication</h3>
+                        <div class="text-base text-slate-600 mt-2 leading-snug"><strong>Terjadi Penyusutan Progresif (-33% Des-Feb).</strong> Dipicu oleh 2 kelemahan sistemik:
+                            <ul class="list-disc pl-6 mt-1 space-y-1">
                                 <li><em>Kualitas Akuisisi Turun:</em> Audiens didominasi segmen <em>budget</em> (AOV anjlok 16%).</li>
                                 <li><em>Retensi Lemah:</em> Ketiadaan sistem re-marketing memicu Churn Rate tinggi (66%).</li>
                             </ul>
                         </div>
                     </div>
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 border-l-8 border-l-emerald-500">
-                        <h3 class="font-bold text-slate-800 text-xl flex items-center gap-3"><i data-lucide="check-circle" class="w-7 h-7 text-emerald-500"></i> Strategic Resolution</h3>
-                        <p class="text-lg text-slate-600 mt-3 leading-relaxed"><strong>Fokus Ganda (Marketing & CX).</strong> Rombak targeting marketing untuk menjangkau tamu premium, dan perkuat SOP <em>upselling/retention</em> di lini operasional.</p>
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 border-l-8 border-l-emerald-500">
+                        <h3 class="font-bold text-slate-800 text-lg flex items-center gap-3"><i data-lucide="check-circle" class="w-6 h-6 text-emerald-500"></i> Strategic Resolution</h3>
+                        <p class="text-base text-slate-600 mt-2 leading-snug"><strong>Fokus Ganda (Marketing & CX).</strong> Rombak targeting marketing untuk menjangkau tamu premium, dan perkuat SOP <em>upselling/retention</em> di lini operasional.</p>
                     </div>
                 </div>
-                <div class="w-full md:w-7/12 bg-white rounded-2xl shadow-sm p-8 border border-slate-200 flex flex-col h-full min-h-[400px]">
-                    <h3 class="text-center font-bold text-slate-800 text-2xl mb-2">Kontraksi Pendapatan vs Transaksi (3 Bulan Terakhir)</h3>
-                    <p class="text-base text-center text-slate-500 mb-6">Tren menunjukkan penurunan simultan pada *Revenue* dan Volume</p>
-                    <div class="relative flex-1 w-full min-h-[250px]">
+                <div class="w-full md:w-7/12 bg-white rounded-2xl shadow-sm p-6 border border-slate-200 flex flex-col h-full">
+                    <h3 class="text-center font-bold text-slate-800 text-xl mb-1">Kontraksi Pendapatan vs Transaksi (3 Bulan Terakhir)</h3>
+                    <p class="text-sm text-center text-slate-500 mb-4">Tren menunjukkan penurunan simultan pada *Revenue* dan Volume</p>
+                    <div class="relative flex-1 w-full min-h-0">
                         <canvas id="chart1"></canvas>
                     </div>
                 </div>
@@ -142,33 +138,33 @@
 
         <!-- SLIDE 2 -->
         <div class="slide" id="slide-2">
-            <header class="bg-slate-900 text-white px-10 py-6 shadow-md flex justify-between items-center z-20 shrink-0">
+            <header class="bg-slate-900 text-white px-8 py-5 shadow-md flex justify-between items-center z-20 shrink-0">
                 <div class="pr-4">
-                    <span class="text-blue-400 font-bold tracking-wider text-base uppercase">Slide 2 : Top-Line Performance & Revenue Drivers</span>
-                    <h1 class="text-3xl lg:text-4xl font-extrabold mt-2">Marketing Menarik Segmen yang Salah</h1>
-                    <p class="text-slate-300 text-lg mt-1">Degradasi Ticket Size sebesar 16% Akibat Pergeseran Demografi Tamu</p>
+                    <span class="text-blue-400 font-bold tracking-wider text-sm uppercase">Slide 2 : Top-Line Performance & Revenue Drivers</span>
+                    <h1 class="text-2xl lg:text-3xl font-extrabold mt-1">Marketing Menarik Segmen yang Salah</h1>
+                    <p class="text-slate-300 text-base mt-1">Degradasi Ticket Size sebesar 16% Akibat Pergeseran Demografi Tamu</p>
                 </div>
-                <i data-lucide="bar-chart-2" class="text-orange-400 w-14 h-14 shrink-0"></i>
+                <i data-lucide="bar-chart-2" class="text-orange-400 w-12 h-12 shrink-0"></i>
             </header>
-            <main class="flex-1 p-10 flex flex-col md:flex-row gap-10 overflow-y-auto">
-                <div class="w-full md:w-1/2 flex flex-col justify-center space-y-8">
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-                        <h4 class="font-bold text-slate-800 text-xl">📉 Key Insights: AOV Drop ke Rp 270K</h4>
-                        <p class="text-lg text-slate-600 mt-3 leading-relaxed">Rata-rata nilai struk (Ticket Size) melemah signifikan dari <strong>Rp 321.091 (Des)</strong> menjadi <strong>Rp 270.001 (Feb)</strong>.</p>
+            <main class="flex-1 p-6 md:p-8 flex flex-col md:flex-row gap-6 md:gap-8 overflow-hidden">
+                <div class="w-full md:w-1/2 flex flex-col justify-center space-y-5">
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
+                        <h4 class="font-bold text-slate-800 text-lg">📉 Key Insights: AOV Drop ke Rp 270K</h4>
+                        <p class="text-base text-slate-600 mt-2 leading-snug">Rata-rata nilai struk (Ticket Size) melemah signifikan dari <strong>Rp 321.091 (Des)</strong> menjadi <strong>Rp 270.001 (Feb)</strong>.</p>
                     </div>
-                    <div class="bg-red-50 p-6 rounded-2xl shadow-sm border border-red-200">
-                        <h4 class="font-bold text-red-800 text-xl">⚠️ Root Cause & Diagnosis</h4>
-                        <p class="text-lg text-red-700 mt-3 leading-relaxed"><strong>Downgrade Preferensi Drastis.</strong> Transaksi layanan Premium (>Rp 300rb) runtuh dari 40% (Des) menjadi hanya 16% (Feb). <br><br><strong>Diagnosis:</strong> Komunikasi brand gagal mengedukasi <em>value</em> premium; sementara tim CX/Kasir gagal melakukan <em>upselling</em> di lokasi.</p>
+                    <div class="bg-red-50 p-5 rounded-2xl shadow-sm border border-red-200">
+                        <h4 class="font-bold text-red-800 text-lg">⚠️ Root Cause & Diagnosis</h4>
+                        <p class="text-base text-red-700 mt-2 leading-snug"><strong>Downgrade Preferensi Drastis.</strong> Transaksi layanan Premium (>Rp 300rb) runtuh dari 40% (Des) menjadi hanya 16% (Feb). <br><br><strong>Diagnosis:</strong> Komunikasi brand gagal mengedukasi <em>value</em> premium; sementara tim CX/Kasir gagal melakukan <em>upselling</em> di lokasi.</p>
                     </div>
-                    <div class="bg-blue-50 p-6 rounded-2xl shadow-sm border border-blue-200">
-                        <h4 class="font-bold text-blue-800 text-xl">💡 Strategic Implication</h4>
-                        <p class="text-lg text-blue-700 mt-3 leading-relaxed"><strong>Pivot Materi Promosi.</strong> Ubah narasi <em>Campaign</em> ke segmen Premium, dibarengi taktik bundling agresif oleh tim CX.</p>
+                    <div class="bg-blue-50 p-5 rounded-2xl shadow-sm border border-blue-200">
+                        <h4 class="font-bold text-blue-800 text-lg">💡 Strategic Implication</h4>
+                        <p class="text-base text-blue-700 mt-2 leading-snug"><strong>Pivot Materi Promosi.</strong> Ubah narasi <em>Campaign</em> ke segmen Premium, dibarengi taktik bundling agresif oleh tim CX.</p>
                     </div>
                 </div>
-                <div class="w-full md:w-1/2 bg-white rounded-2xl shadow-sm p-8 border border-slate-200 flex flex-col h-full min-h-[400px]">
-                    <h3 class="text-center font-bold text-slate-800 text-2xl mb-2">Distribusi Transaksi Berdasarkan Kelas Harga (100% Stacked)</h3>
-                    <p class="text-base text-center text-slate-500 mb-6">Penyusutan drastis pada porsi layanan Premium membuktikan audiens bergeser ke layanan "basic"</p>
-                    <div class="relative flex-1 w-full min-h-[250px]">
+                <div class="w-full md:w-1/2 bg-white rounded-2xl shadow-sm p-6 border border-slate-200 flex flex-col h-full">
+                    <h3 class="text-center font-bold text-slate-800 text-xl mb-1">Distribusi Transaksi Berdasarkan Kelas Harga (100% Stacked)</h3>
+                    <p class="text-sm text-center text-slate-500 mb-4">Penyusutan drastis pada porsi layanan Premium membuktikan audiens bergeser ke layanan "basic"</p>
+                    <div class="relative flex-1 w-full min-h-0">
                         <canvas id="chart2"></canvas>
                     </div>
                 </div>
@@ -177,63 +173,63 @@
 
         <!-- SLIDE 3 -->
         <div class="slide" id="slide-3">
-            <header class="bg-slate-900 text-white px-10 py-6 shadow-md flex justify-between items-center z-20 shrink-0">
+            <header class="bg-slate-900 text-white px-8 py-5 shadow-md flex justify-between items-center z-20 shrink-0">
                 <div class="pr-4">
-                    <span class="text-blue-400 font-bold tracking-wider text-base uppercase">Slide 3 : Customer Lifecycle & Retention</span>
-                    <h1 class="text-3xl lg:text-4xl font-extrabold mt-2">Ketiadaan Sistem CRM & Relasi Tamu</h1>
-                    <p class="text-slate-300 text-lg mt-1">Menyebabkan 66% Pelanggan Churn di Kunjungan Pertama</p>
+                    <span class="text-blue-400 font-bold tracking-wider text-sm uppercase">Slide 3 : Customer Lifecycle & Retention</span>
+                    <h1 class="text-2xl lg:text-3xl font-extrabold mt-1">Ketiadaan Sistem CRM & Relasi Tamu</h1>
+                    <p class="text-slate-300 text-base mt-1">Menyebabkan 66% Pelanggan Churn di Kunjungan Pertama</p>
                 </div>
-                <i data-lucide="users" class="text-purple-400 w-14 h-14 shrink-0"></i>
+                <i data-lucide="users" class="text-purple-400 w-12 h-12 shrink-0"></i>
             </header>
-            <main class="flex-1 p-10 flex flex-col md:flex-row gap-10 overflow-y-auto">
-                <div class="w-full md:w-1/2 bg-white rounded-2xl shadow-sm p-8 border border-slate-200 flex flex-col justify-center items-center h-full min-h-[450px]">
-                    <h3 class="text-center font-bold text-slate-800 text-2xl mb-6">Komposisi Retensi Pelanggan</h3>
+            <main class="flex-1 p-6 md:p-8 flex flex-col md:flex-row gap-6 md:gap-8 overflow-hidden">
+                <div class="w-full md:w-1/2 bg-white rounded-2xl shadow-sm p-6 border border-slate-200 flex flex-col justify-center items-center h-full">
+                    <h3 class="text-center font-bold text-slate-800 text-xl mb-4">Komposisi Retensi Pelanggan</h3>
                     
-                    <div class="relative w-full max-w-[380px] aspect-square">
+                    <div class="relative w-full max-w-[300px] aspect-square">
                         <canvas id="chart3"></canvas>
                         <div class="absolute inset-0 flex items-center justify-center flex-col pointer-events-none">
-                            <span class="text-5xl font-black text-red-500">65.6%</span>
-                            <span class="text-base font-bold text-slate-500 mt-1">CHURN RATE</span>
+                            <span class="text-4xl font-black text-red-500">65.6%</span>
+                            <span class="text-sm font-bold text-slate-500 mt-1">CHURN RATE</span>
                         </div>
                     </div>
                     
-                    <div class="mt-8 w-full px-6">
-                        <h4 class="text-sm font-bold text-slate-500 mb-3 uppercase tracking-wider text-center">Cohort Retention Heatmap</h4>
-                        <table class="w-full text-lg text-center border-collapse">
+                    <div class="mt-4 w-full px-4">
+                        <h4 class="text-xs font-bold text-slate-500 mb-2 uppercase tracking-wider text-center">Cohort Retention Heatmap</h4>
+                        <table class="w-full text-sm lg:text-base text-center border-collapse">
                             <thead>
                                 <tr class="bg-slate-100 text-slate-600">
-                                    <th class="p-3 border border-slate-200 w-1/2">Bulan Akuisisi</th>
-                                    <th class="p-3 border border-slate-200 w-1/2">Bulan 1 (Retained)</th>
+                                    <th class="p-2 border border-slate-200 w-1/2">Bulan Akuisisi</th>
+                                    <th class="p-2 border border-slate-200 w-1/2">Bulan 1 (Retained)</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td class="p-3 border border-slate-200 font-medium text-slate-700">Desember (73 Cust)</td>
-                                    <td class="p-3 border border-slate-200 bg-red-100 text-red-700 font-bold">21.9%</td>
+                                    <td class="p-2 border border-slate-200 font-medium text-slate-700">Desember (73 Cust)</td>
+                                    <td class="p-2 border border-slate-200 bg-red-100 text-red-700 font-bold">21.9%</td>
                                 </tr>
                                 <tr>
-                                    <td class="p-3 border border-slate-200 font-medium text-slate-700">Januari</td>
-                                    <td class="p-3 border border-slate-200 bg-red-200 text-red-800 font-bold">10.2%</td>
+                                    <td class="p-2 border border-slate-200 font-medium text-slate-700">Januari</td>
+                                    <td class="p-2 border border-slate-200 bg-red-200 text-red-800 font-bold">10.2%</td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
-                <div class="w-full md:w-1/2 flex flex-col justify-center space-y-8">
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-                        <h4 class="font-bold text-slate-800 text-2xl mb-4">Key Insights</h4>
-                        <ul class="list-disc pl-6 space-y-3 text-slate-600 text-lg">
+                <div class="w-full md:w-1/2 flex flex-col justify-center space-y-5">
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
+                        <h4 class="font-bold text-slate-800 text-xl mb-2">Key Insights</h4>
+                        <ul class="list-disc pl-5 space-y-2 text-slate-600 text-base">
                             <li><strong>Tingkat Churn Kritis (66%):</strong> 105 dari 160 tamu adalah <em>One-Time Buyers</em> yang tidak pernah kembali.</li>
                             <li><strong>LTV Tertahan Rendah:</strong> <em>Lifetime Value</em> tertahan di angka Rp 366.103. Bisnis membiarkan potensi pendapatan menguap.</li>
                         </ul>
                     </div>
-                    <div class="bg-red-50 p-6 rounded-2xl border border-red-200">
-                        <h4 class="font-bold text-red-800 text-xl">The Root Cause</h4>
-                        <p class="text-lg text-red-700 mt-3 leading-relaxed"><strong>Absennya CRM & CX "Wow Factor".</strong> Tidak ada <em>automated re-marketing</em> (WA/Email) untuk memicu kunjungan berulang, dan pengalaman layanan belum menciptakan <em>loyalty</em>.</p>
+                    <div class="bg-red-50 p-5 rounded-2xl border border-red-200">
+                        <h4 class="font-bold text-red-800 text-lg">The Root Cause</h4>
+                        <p class="text-base text-red-700 mt-2 leading-snug"><strong>Absennya CRM & CX "Wow Factor".</strong> Tidak ada <em>automated re-marketing</em> (WA/Email) untuk memicu kunjungan berulang, dan pengalaman layanan belum menciptakan <em>loyalty</em>.</p>
                     </div>
-                    <div class="bg-emerald-50 p-6 rounded-2xl border border-emerald-200">
-                        <h4 class="font-bold text-emerald-800 text-xl">Strategic Implication</h4>
-                        <p class="text-lg text-emerald-700 mt-3 leading-relaxed"><strong>Eksekusi Program Retensi.</strong> Wajibkan <em>Trigger Campaign</em> berbasis data kontak, dan tingkatkan kualitas pengalaman kunjungan kedua.</p>
+                    <div class="bg-emerald-50 p-5 rounded-2xl border border-emerald-200">
+                        <h4 class="font-bold text-emerald-800 text-lg">Strategic Implication</h4>
+                        <p class="text-base text-emerald-700 mt-2 leading-snug"><strong>Eksekusi Program Retensi.</strong> Wajibkan <em>Trigger Campaign</em> berbasis data kontak, dan tingkatkan kualitas pengalaman kunjungan kedua.</p>
                     </div>
                 </div>
             </main>
@@ -241,124 +237,124 @@
 
         <!-- SLIDE 4 -->
         <div class="slide" id="slide-4">
-            <header class="bg-slate-900 text-white px-10 py-6 shadow-md flex justify-between items-center z-20 shrink-0">
+            <header class="bg-slate-900 text-white px-8 py-5 shadow-md flex justify-between items-center z-20 shrink-0">
                 <div class="pr-4">
-                    <span class="text-blue-400 font-bold tracking-wider text-base uppercase">Slide 4 : Wallet Share & Market Basket</span>
-                    <h1 class="text-3xl lg:text-4xl font-extrabold mt-2">Kegagalan Narasi "One-Stop Wellness"</h1>
-                    <p class="text-slate-300 text-lg mt-1">Memicu Fenomena Silo Ekstrem Antar Departemen Layanan</p>
+                    <span class="text-blue-400 font-bold tracking-wider text-sm uppercase">Slide 4 : Wallet Share & Market Basket</span>
+                    <h1 class="text-2xl lg:text-3xl font-extrabold mt-1">Kegagalan Narasi "One-Stop Wellness"</h1>
+                    <p class="text-slate-300 text-base mt-1">Memicu Fenomena Silo Ekstrem Antar Departemen Layanan</p>
                 </div>
-                <i data-lucide="shopping-bag" class="text-pink-400 w-14 h-14 shrink-0"></i>
+                <i data-lucide="shopping-bag" class="text-pink-400 w-12 h-12 shrink-0"></i>
             </header>
-            <main class="flex-1 p-10 flex flex-col md:flex-row gap-10 overflow-y-auto">
-                <div class="w-full md:w-1/2 flex flex-col justify-center space-y-8">
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-                        <h4 class="font-bold text-slate-800 text-2xl mb-4">Key Insights</h4>
-                        <p class="text-lg text-slate-600 mt-2 leading-relaxed"><strong>Silo Ekstrem (89% Tamu <em>Single-Service</em>).</strong> Hanya datang spesifik untuk Pijat ATAU Kecantikan.</p>
-                        <p class="text-lg text-slate-600 mt-4 leading-relaxed"><strong>Missed Opportunity:</strong> Hanya <strong>11% tamu</strong> yang berhasil diekspos ke lebih dari satu departemen layanan.</p>
+            <main class="flex-1 p-6 md:p-8 flex flex-col md:flex-row gap-6 md:gap-8 overflow-hidden">
+                <div class="w-full md:w-1/2 flex flex-col justify-center space-y-5">
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
+                        <h4 class="font-bold text-slate-800 text-xl mb-2">Key Insights</h4>
+                        <p class="text-base text-slate-600 mt-1 leading-snug"><strong>Silo Ekstrem (89% Tamu <em>Single-Service</em>).</strong> Hanya datang spesifik untuk Pijat ATAU Kecantikan.</p>
+                        <p class="text-base text-slate-600 mt-3 leading-snug"><strong>Missed Opportunity:</strong> Hanya <strong>11% tamu</strong> yang berhasil diekspos ke lebih dari satu departemen layanan.</p>
                     </div>
-                    <div class="bg-red-50 p-6 rounded-2xl border border-red-200">
-                        <h4 class="font-bold text-red-800 text-xl">The Root Cause</h4>
-                        <p class="text-lg text-red-700 mt-3 leading-relaxed"><strong>Komunikasi Brand Terputus.</strong> Kanal digital dan promo <em>in-store</em> tidak mempromosikan keterkaitan produk lintas departemen kepada pelanggan.</p>
+                    <div class="bg-red-50 p-5 rounded-2xl border border-red-200">
+                        <h4 class="font-bold text-red-800 text-lg">The Root Cause</h4>
+                        <p class="text-base text-red-700 mt-2 leading-snug"><strong>Komunikasi Brand Terputus.</strong> Kanal digital dan promo <em>in-store</em> tidak mempromosikan keterkaitan produk lintas departemen kepada pelanggan.</p>
                     </div>
-                    <div class="bg-blue-50 p-6 rounded-2xl border border-blue-200">
-                        <h4 class="font-bold text-blue-800 text-xl">Strategic Implication</h4>
-                        <p class="text-lg text-blue-700 mt-3 leading-relaxed"><strong>Luncurkan "Hero Bundles".</strong> Kampanyekan paket <em>Ultimate Me-Time</em> (Pijat + Nails) untuk mendobrak sekat departemen secara instan.</p>
+                    <div class="bg-blue-50 p-5 rounded-2xl border border-blue-200">
+                        <h4 class="font-bold text-blue-800 text-lg">Strategic Implication</h4>
+                        <p class="text-base text-blue-700 mt-2 leading-snug"><strong>Luncurkan "Hero Bundles".</strong> Kampanyekan paket <em>Ultimate Me-Time</em> (Pijat + Nails) untuk mendobrak sekat departemen secara instan.</p>
                     </div>
                 </div>
-                <div class="w-full md:w-1/2 bg-white rounded-2xl shadow-sm p-8 border border-slate-200 flex flex-col justify-center items-center relative h-full min-h-[450px]">
-                    <h3 class="text-center font-bold text-slate-800 text-2xl mb-8 z-10">Cross-Pollination Departemen (Venn Diagram)</h3>
+                <div class="w-full md:w-1/2 bg-white rounded-2xl shadow-sm p-6 border border-slate-200 flex flex-col justify-center items-center relative h-full">
+                    <h3 class="text-center font-bold text-slate-800 text-xl mb-4 z-10">Cross-Pollination Departemen (Venn Diagram)</h3>
                     
-                    <div class="relative w-full max-w-[400px] h-[300px] flex justify-center mt-4">
+                    <div class="relative w-full max-w-[350px] h-[250px] flex justify-center mt-2">
                         <div class="venn-circle bg-blue-500 left-0 shadow-lg flex-col">
-                            <span class="text-lg uppercase tracking-wider opacity-90">Pijat & Facial</span>
+                            <span class="text-base uppercase tracking-wider opacity-90">Pijat & Facial</span>
                         </div>
                         <div class="venn-circle bg-pink-500 right-0 shadow-lg flex-col">
-                            <span class="text-lg uppercase tracking-wider opacity-90">Beauty & Nails</span>
+                            <span class="text-base uppercase tracking-wider opacity-90">Beauty & Nails</span>
                         </div>
-                        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20 flex flex-col items-center bg-white/95 p-4 rounded-full shadow-lg border border-slate-200">
-                            <span class="font-black text-slate-800 text-3xl">10.6%</span>
-                            <span class="text-sm font-bold text-slate-500 leading-tight mt-1 text-center">CROSS<br>BUYERS</span>
-                            <span class="text-xs text-slate-400 mt-1 font-medium">(17 Orang)</span>
+                        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20 flex flex-col items-center bg-white/95 p-3 rounded-full shadow-lg border border-slate-200">
+                            <span class="font-black text-slate-800 text-2xl">10.6%</span>
+                            <span class="text-xs font-bold text-slate-500 leading-tight mt-1 text-center">CROSS<br>BUYERS</span>
+                            <span class="text-[10px] text-slate-400 mt-1 font-medium">(17 Orang)</span>
                         </div>
                     </div>
-                    <p class="text-base text-center text-slate-500 mt-8 z-10 max-w-md">Irisan yang sangat sempit di atas merepresentasikan kegagalan promosi layanan silang (cross-selling).</p>
+                    <p class="text-sm text-center text-slate-500 mt-6 z-10 max-w-sm">Irisan yang sangat sempit di atas merepresentasikan kegagalan promosi layanan silang (cross-selling).</p>
                 </div>
             </main>
         </div>
 
         <!-- SLIDE 5 -->
         <div class="slide" id="slide-5">
-            <header class="bg-slate-900 text-white px-10 py-6 shadow-md flex justify-between items-center z-20 shrink-0">
+            <header class="bg-slate-900 text-white px-8 py-5 shadow-md flex justify-between items-center z-20 shrink-0">
                 <div class="pr-4">
-                    <span class="text-blue-400 font-bold tracking-wider text-base uppercase">Slide 5 : Operational Yield & Capacity Utilization</span>
-                    <h1 class="text-3xl lg:text-4xl font-extrabold mt-2">Utilisasi Kapasitas Asimetris</h1>
-                    <p class="text-slate-300 text-lg mt-1">Memicu Risiko Burnout pada Terapis Utama di Akhir Pekan</p>
+                    <span class="text-blue-400 font-bold tracking-wider text-sm uppercase">Slide 5 : Operational Yield & Capacity Utilization</span>
+                    <h1 class="text-2xl lg:text-3xl font-extrabold mt-1">Utilisasi Kapasitas Asimetris</h1>
+                    <p class="text-slate-300 text-base mt-1">Memicu Risiko Burnout pada Terapis Utama di Akhir Pekan</p>
                 </div>
-                <i data-lucide="activity" class="text-emerald-400 w-14 h-14 shrink-0"></i>
+                <i data-lucide="activity" class="text-emerald-400 w-12 h-12 shrink-0"></i>
             </header>
-            <main class="flex-1 p-10 flex flex-col md:flex-row gap-10 overflow-y-auto">
-                <div class="w-full md:w-5/12 flex flex-col justify-center space-y-6">
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-                        <h4 class="font-bold text-slate-800 text-xl mb-2 flex items-center"><i data-lucide="calendar" class="w-6 h-6 mr-3 text-blue-500"></i> Kapasitas Mid-Week Terbuang</h4>
-                        <p class="text-lg text-slate-600 leading-relaxed">Hari Rabu dan Kamis menyumbang titik utilisasi sangat rendah (hanya <strong>26 transaksi</strong> dalam 3 bulan).</p>
+            <main class="flex-1 p-6 md:p-8 flex flex-col md:flex-row gap-6 md:gap-8 overflow-hidden">
+                <div class="w-full md:w-5/12 flex flex-col justify-center space-y-5">
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
+                        <h4 class="font-bold text-slate-800 text-lg mb-2 flex items-center"><i data-lucide="calendar" class="w-5 h-5 mr-3 text-blue-500"></i> Kapasitas Mid-Week Terbuang</h4>
+                        <p class="text-base text-slate-600 leading-snug">Hari Rabu dan Kamis menyumbang titik utilisasi sangat rendah (hanya <strong>26 transaksi</strong> dalam 3 bulan).</p>
                     </div>
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-                        <h4 class="font-bold text-slate-800 text-xl mb-3 flex items-center"><i data-lucide="user-minus" class="w-6 h-6 mr-3 text-purple-500"></i> Risiko Bottleneck (Key-Person)</h4>
-                        <p class="text-lg text-slate-600 leading-relaxed">1 Terapis kecantikan (Rika) menangani <strong>22% total revenue</strong> sendirian, memicu risiko kelelahan dan komplain di puncak akhir pekan.</p>
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
+                        <h4 class="font-bold text-slate-800 text-lg mb-2 flex items-center"><i data-lucide="user-minus" class="w-5 h-5 mr-3 text-purple-500"></i> Risiko Bottleneck</h4>
+                        <p class="text-base text-slate-600 leading-snug">1 Terapis kecantikan menangani <strong>22% total revenue</strong> sendirian, memicu risiko kelelahan dan komplain di akhir pekan.</p>
                     </div>
-                    <div class="bg-red-50 p-6 rounded-2xl border border-red-200">
-                        <h4 class="font-bold text-red-800 text-xl mb-2 flex items-center"><i data-lucide="alert-octagon" class="w-6 h-6 mr-3 text-red-500"></i> Strategic Implication</h4>
-                        <p class="text-lg text-red-700 leading-relaxed"><strong>Terapkan <em>Dynamic Pricing</em>.</strong> Alihkan trafik <em>budget-conscious</em> ke tengah minggu via promo khusus, bebaskan slot akhir pekan untuk tamu premium.</p>
+                    <div class="bg-red-50 p-5 rounded-2xl border border-red-200">
+                        <h4 class="font-bold text-red-800 text-lg mb-2 flex items-center"><i data-lucide="alert-octagon" class="w-5 h-5 mr-3 text-red-500"></i> Strategic Implication</h4>
+                        <p class="text-base text-red-700 leading-snug"><strong>Terapkan <em>Dynamic Pricing</em>.</strong> Alihkan trafik <em>budget-conscious</em> ke tengah minggu via promo khusus, bebaskan slot akhir pekan untuk tamu premium.</p>
                     </div>
                 </div>
-                <div class="w-full md:w-7/12 bg-white rounded-2xl shadow-sm p-8 border border-slate-200 flex flex-col h-full min-h-[400px]">
-                    <h3 class="text-center font-bold text-slate-800 text-2xl mb-2">Matriks Kuadran Terapis (Yield vs Volume)</h3>
-                    <p class="text-base text-center text-slate-500 mb-6">Mendeteksi tingkat efisiensi pendapatan dan risiko kelelahan kerja terapis</p>
-                    <div class="relative flex-1 w-full min-h-[250px]">
+                <div class="w-full md:w-7/12 bg-white rounded-2xl shadow-sm p-6 border border-slate-200 flex flex-col h-full">
+                    <h3 class="text-center font-bold text-slate-800 text-xl mb-1">Matriks Kuadran Terapis (Yield vs Volume)</h3>
+                    <p class="text-sm text-center text-slate-500 mb-4">Mendeteksi tingkat efisiensi pendapatan dan risiko kelelahan kerja terapis</p>
+                    <div class="relative flex-1 w-full min-h-0">
                         <canvas id="chart5"></canvas>
                     </div>
                 </div>
             </main>
         </div>
 
-        <!-- SLIDE 6 (NEW) -->
+        <!-- SLIDE 6 -->
         <div class="slide" id="slide-6">
-            <header class="bg-slate-900 text-white px-10 py-6 shadow-md flex justify-between items-center z-20 shrink-0">
+            <header class="bg-slate-900 text-white px-8 py-5 shadow-md flex justify-between items-center z-20 shrink-0">
                 <div class="pr-4">
-                    <span class="text-blue-400 font-bold tracking-wider text-base uppercase">Slide 6 : Product Portfolio & Marketing Prioritization</span>
-                    <h1 class="text-3xl lg:text-4xl font-extrabold mt-2">Prioritaskan Ad Spend pada Layanan High-Yield</h1>
-                    <p class="text-slate-300 text-lg mt-1">Mengekstrak "Hidden Goldmine" untuk Memaksimalkan Profitabilitas Kapasitas</p>
+                    <span class="text-blue-400 font-bold tracking-wider text-sm uppercase">Slide 6 : Product Portfolio & Marketing Prioritization</span>
+                    <h1 class="text-2xl lg:text-3xl font-extrabold mt-1">Prioritaskan Ad Spend pada Layanan High-Yield</h1>
+                    <p class="text-slate-300 text-base mt-1">Mengekstrak "Hidden Goldmine" untuk Memaksimalkan Profitabilitas Kapasitas</p>
                 </div>
-                <i data-lucide="pie-chart" class="text-yellow-400 w-14 h-14 shrink-0"></i>
+                <i data-lucide="pie-chart" class="text-yellow-400 w-12 h-12 shrink-0"></i>
             </header>
-            <main class="flex-1 p-10 flex flex-col md:flex-row gap-10 overflow-y-auto">
-                <div class="w-full md:w-5/12 flex flex-col justify-center space-y-6">
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 border-l-8 border-l-blue-500">
-                        <h4 class="font-bold text-slate-800 text-xl flex items-center gap-3">💰 The Cash Cow (Pijat)</h4>
-                        <p class="text-lg text-slate-600 mt-2 leading-relaxed">Tulang punggung utama (<strong>182 Trx</strong>). Namun, mempromosikan layanan ini secara berlebihan memakan slot kapasitas ruang yang masif.</p>
+            <main class="flex-1 p-6 md:p-8 flex flex-col md:flex-row gap-6 md:gap-8 overflow-hidden">
+                <div class="w-full md:w-5/12 flex flex-col justify-center space-y-4">
+                    <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 border-l-8 border-l-blue-500">
+                        <h4 class="font-bold text-slate-800 text-lg flex items-center gap-2">💰 The Cash Cow (Pijat)</h4>
+                        <p class="text-base text-slate-600 mt-1 leading-snug">Tulang punggung utama (<strong>182 Trx</strong>). Promosi berlebihan memakan slot ruang masif.</p>
                     </div>
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 border-l-8 border-l-emerald-500">
-                        <h4 class="font-bold text-slate-800 text-xl flex items-center gap-3">✨ The Hidden Goldmine (Facial)</h4>
-                        <p class="text-lg text-slate-600 mt-2 leading-relaxed">Mencetak Efisiensi Waktu Tertinggi (<strong>Rp 6.749/mnt</strong>)—hampir 2x lipat lebih efisien. Ironisnya transaksi sangat kecil (17 Trx).</p>
+                    <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 border-l-8 border-l-emerald-500">
+                        <h4 class="font-bold text-slate-800 text-lg flex items-center gap-2">✨ Hidden Goldmine (Facial)</h4>
+                        <p class="text-base text-slate-600 mt-1 leading-snug">Mencetak Efisiensi Waktu Tertinggi (<strong>Rp 6.749/mnt</strong>). Ironisnya transaksi kecil (17 Trx).</p>
                     </div>
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 border-l-8 border-l-red-500">
-                        <h4 class="font-bold text-slate-800 text-xl flex items-center gap-3">⚠️ The Capacity Trap (Kecantikan)</h4>
-                        <p class="text-lg text-slate-600 mt-2 leading-relaxed">Volume tinggi (<strong>72 Trx</strong>), tapi rentan <em>bottleneck</em> karena bergantung pada 1 staf terapis.</p>
+                    <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 border-l-8 border-l-red-500">
+                        <h4 class="font-bold text-slate-800 text-lg flex items-center gap-2">⚠️ Capacity Trap (Kecantikan)</h4>
+                        <p class="text-base text-slate-600 mt-1 leading-snug">Volume tinggi (<strong>72 Trx</strong>), tapi rentan <em>bottleneck</em> karena bergantung 1 terapis.</p>
                     </div>
                     
-                    <div class="bg-blue-50 p-6 rounded-2xl shadow-sm border border-blue-200">
-                        <h4 class="font-bold text-blue-800 text-xl mb-3">💡 Strategic Implication (Marketing Action Plan)</h4>
-                        <ul class="space-y-4 text-lg text-blue-900 leading-relaxed">
-                            <li><strong>Prioritas 1 (Acquisition Ads):</strong> Kampanyekan layanan Facial dan <em>"Hero Bundles"</em> (Massage + Facial) ke audiens baru karena ini adalah "Mesin Profit" paling efisien tanpa menghabiskan slot waktu terapis secara masif.</li>
-                            <li><strong>Prioritas 2 (Cross-Sell / No-Ads):</strong> Layanan Kecantikan tidak perlu diiklankan keluar, cukup dijual ke dalam (<em>In-store marketing</em>) kepada tamu Pijat.</li>
+                    <div class="bg-blue-50 p-4 rounded-2xl shadow-sm border border-blue-200">
+                        <h4 class="font-bold text-blue-800 text-lg mb-2">💡 Strategic Implication (Marketing Action)</h4>
+                        <ul class="space-y-2 text-base text-blue-900 leading-snug">
+                            <li><strong>Prioritas 1:</strong> Iklankan Facial dan <em>Bundles</em> (Massage + Facial) ke audiens baru karena sangat efisien waktu.</li>
+                            <li><strong>Prioritas 2:</strong> Kecantikan tidak perlu diiklankan keluar, cukup *cross-sell* di dalam toko.</li>
                         </ul>
                     </div>
 
                 </div>
-                <div class="w-full md:w-7/12 bg-white rounded-2xl shadow-sm p-8 border border-slate-200 flex flex-col h-full min-h-[400px]">
-                    <h3 class="text-center font-bold text-slate-800 text-2xl mb-2">Product Portfolio Bubble Chart</h3>
-                    <p class="text-base text-center text-slate-500 mb-6">Sumbu X (Volume) | Sumbu Y (Yield/Menit) | Ukuran Gelembung (Total Pendapatan)</p>
-                    <div class="relative flex-1 w-full min-h-[250px]">
+                <div class="w-full md:w-7/12 bg-white rounded-2xl shadow-sm p-6 border border-slate-200 flex flex-col h-full">
+                    <h3 class="text-center font-bold text-slate-800 text-xl mb-1">Product Portfolio Bubble Chart</h3>
+                    <p class="text-sm text-center text-slate-500 mb-4">X (Volume) | Y (Yield/Menit) | Gelembung (Pendapatan)</p>
+                    <div class="relative flex-1 w-full min-h-0">
                         <canvas id="chart6"></canvas>
                     </div>
                 </div>
@@ -367,59 +363,59 @@
 
         <!-- SLIDE 7 -->
         <div class="slide" id="slide-7">
-            <header class="bg-slate-900 text-white px-10 py-6 shadow-md flex justify-between items-center z-20 shrink-0">
+            <header class="bg-slate-900 text-white px-8 py-5 shadow-md flex justify-between items-center z-20 shrink-0">
                 <div class="pr-4">
-                    <span class="text-blue-400 font-bold tracking-wider text-base uppercase">Slide 7 : The 100-Day Turnaround Initiatives</span>
-                    <h1 class="text-3xl lg:text-4xl font-extrabold mt-2">3 Pilar Utama Turnaround</h1>
-                    <p class="text-slate-300 text-lg mt-1">Sinergi Marketing & CX dalam 100 Hari ke Depan</p>
+                    <span class="text-blue-400 font-bold tracking-wider text-sm uppercase">Slide 7 : The 100-Day Turnaround Initiatives</span>
+                    <h1 class="text-2xl lg:text-3xl font-extrabold mt-1">3 Pilar Utama Turnaround</h1>
+                    <p class="text-slate-300 text-base mt-1">Sinergi Marketing & CX dalam 100 Hari ke Depan</p>
                 </div>
-                <i data-lucide="rocket" class="text-yellow-400 w-14 h-14 shrink-0"></i>
+                <i data-lucide="rocket" class="text-yellow-400 w-12 h-12 shrink-0"></i>
             </header>
-            <main class="flex-1 p-10 flex flex-col md:flex-row gap-10 overflow-y-auto">
-                <div class="w-full md:w-1/2 flex flex-col justify-center space-y-6">
+            <main class="flex-1 p-6 md:p-8 flex flex-col md:flex-row gap-6 md:gap-8 overflow-hidden">
+                <div class="w-full md:w-1/2 flex flex-col justify-center space-y-5">
                     <!-- Pillar 1 -->
-                    <div class="bg-white p-6 rounded-xl shadow-sm border-l-8 border-l-purple-500">
-                        <h3 class="font-bold text-slate-800 text-xl">1. Precision Acquisition <span class="text-base font-normal text-slate-500">(Marketing)</span></h3>
-                        <p class="text-base lg:text-lg text-slate-700 mt-2">Hentikan diskon massal. Geser narasi ke <em>"Premium Self-Reward"</em> & iklankan layanan <em>high-yield</em> (Facial/Body Spa).</p>
-                        <p class="text-base lg:text-lg text-purple-700 font-bold mt-2">🎯 Target: Menaikkan eksposur Premium & meratakan utilisasi.</p>
+                    <div class="bg-white p-5 rounded-xl shadow-sm border-l-8 border-l-purple-500">
+                        <h3 class="font-bold text-slate-800 text-lg">1. Precision Acquisition <span class="text-sm font-normal text-slate-500">(Marketing)</span></h3>
+                        <p class="text-base text-slate-700 mt-1">Hentikan diskon massal. Geser ke <em>"Premium Self-Reward"</em> & iklankan layanan <em>high-yield</em>.</p>
+                        <p class="text-base text-purple-700 font-bold mt-1">🎯 Target: Menaikkan eksposur Premium.</p>
                     </div>
                     <!-- Pillar 2 -->
-                    <div class="bg-white p-6 rounded-xl shadow-sm border-l-8 border-l-blue-500">
-                        <h3 class="font-bold text-slate-800 text-xl">2. Expand the Wallet <span class="text-base font-normal text-slate-500">(Sinergi)</span></h3>
-                        <p class="text-base lg:text-lg text-slate-700 mt-2">Luncurkan <em>Cross-Sell Bundling</em>. Wajibkan tim CX menggunakan <em>script upselling</em> saat reservasi WA & di meja kasir.</p>
-                        <p class="text-base lg:text-lg text-blue-700 font-bold mt-2">🎯 Target: AOV > Rp 300.000.</p>
+                    <div class="bg-white p-5 rounded-xl shadow-sm border-l-8 border-l-blue-500">
+                        <h3 class="font-bold text-slate-800 text-lg">2. Expand the Wallet <span class="text-sm font-normal text-slate-500">(Sinergi)</span></h3>
+                        <p class="text-base text-slate-700 mt-1">Luncurkan <em>Cross-Sell Bundling</em>. Gunakan <em>script upselling</em> saat reservasi WA.</p>
+                        <p class="text-base text-blue-700 font-bold mt-1">🎯 Target: AOV > Rp 300.000.</p>
                     </div>
                     <!-- Pillar 3 -->
-                    <div class="bg-white p-6 rounded-xl shadow-sm border-l-8 border-l-emerald-500">
-                        <h3 class="font-bold text-slate-800 text-xl">3. Defend the Base <span class="text-base font-normal text-slate-500">(CX & CRM)</span></h3>
-                        <p class="text-base lg:text-lg text-slate-700 mt-2">Eksekusi <em>Bounce-Back Voucher</em> (Diskon 15% next visit) di kasir. Aktifkan WA Re-marketing untuk jadwal <em>retouch</em> minggu ke-3.</p>
-                        <p class="text-base lg:text-lg text-emerald-700 font-bold mt-2">🎯 Target: Churn Rate < 45%.</p>
+                    <div class="bg-white p-5 rounded-xl shadow-sm border-l-8 border-l-emerald-500">
+                        <h3 class="font-bold text-slate-800 text-lg">3. Defend the Base <span class="text-sm font-normal text-slate-500">(CX & CRM)</span></h3>
+                        <p class="text-base text-slate-700 mt-1">Eksekusi <em>Bounce-Back Voucher</em> di kasir. Aktifkan WA Re-marketing minggu ke-3.</p>
+                        <p class="text-base text-emerald-700 font-bold mt-1">🎯 Target: Churn Rate < 45%.</p>
                     </div>
                 </div>
                 
-                <div class="w-full md:w-1/2 bg-white rounded-2xl shadow-sm p-8 border border-slate-200 flex flex-col h-full min-h-[400px]">
-                    <h3 class="text-center font-bold text-slate-800 text-2xl mb-6">Priority Matrix (Impact vs Effort)</h3>
-                    <div class="flex-1 relative bg-white matrix-grid min-h-[300px]">
+                <div class="w-full md:w-1/2 bg-white rounded-2xl shadow-sm p-6 border border-slate-200 flex flex-col h-full">
+                    <h3 class="text-center font-bold text-slate-800 text-xl mb-4">Priority Matrix (Impact vs Effort)</h3>
+                    <div class="flex-1 relative bg-white matrix-grid min-h-0">
                         <div class="y-axis-label">Business Impact (Tinggi)</div>
                         
                         <!-- Quadrants -->
                         <div class="quadrant q-high-low relative">
-                            <span class="absolute top-3 left-3 text-sm font-bold text-emerald-800 bg-emerald-200 px-3 py-1 rounded">QUICK WINS</span>
-                            <p class="text-lg lg:text-xl font-bold text-slate-800 mt-6 leading-tight">Bounce-Back Voucher & WA Remarketing</p>
-                            <p class="text-sm lg:text-base text-slate-600 mt-2">Implementasi SOP kasir besok</p>
+                            <span class="absolute top-2 left-2 text-xs font-bold text-emerald-800 bg-emerald-200 px-2 py-1 rounded">QUICK WINS</span>
+                            <p class="text-base font-bold text-slate-800 mt-4 leading-tight">Bounce-Back & WA Remarketing</p>
+                            <p class="text-sm text-slate-600 mt-1">Implementasi SOP besok</p>
                         </div>
                         <div class="quadrant q-high-high relative">
-                            <span class="absolute top-3 right-3 text-sm font-bold text-blue-800 bg-blue-200 px-3 py-1 rounded">MAJOR PROJECTS</span>
-                            <p class="text-lg lg:text-xl font-bold text-slate-800 mt-6 leading-tight">Ads Re-Targeting & Mid-Week Promo</p>
-                            <p class="text-sm lg:text-base text-slate-600 mt-2">Butuh desain kampanye</p>
+                            <span class="absolute top-2 right-2 text-xs font-bold text-blue-800 bg-blue-200 px-2 py-1 rounded">MAJOR PROJECTS</span>
+                            <p class="text-base font-bold text-slate-800 mt-4 leading-tight">Ads Re-Targeting & Promo</p>
+                            <p class="text-sm text-slate-600 mt-1">Butuh desain kampanye</p>
                         </div>
                         <div class="quadrant q-low-low relative">
-                            <span class="absolute bottom-3 left-3 text-sm font-bold text-slate-500">FILL INS</span>
-                            <p class="text-sm lg:text-base text-slate-500">Ubah Narasi Bio IG</p>
+                            <span class="absolute bottom-2 left-2 text-xs font-bold text-slate-500">FILL INS</span>
+                            <p class="text-sm text-slate-500">Ubah Narasi Bio IG</p>
                         </div>
                         <div class="quadrant q-low-high relative">
-                            <span class="absolute bottom-3 right-3 text-sm font-bold text-slate-500">THANKLESS</span>
-                            <p class="text-sm lg:text-base text-slate-500">Cetak ulang brosur fisik</p>
+                            <span class="absolute bottom-2 right-2 text-xs font-bold text-slate-500">THANKLESS</span>
+                            <p class="text-sm text-slate-500">Cetak ulang brosur fisik</p>
                         </div>
                         
                         <div class="x-axis-label">Implementation Effort (Rendah ke Tinggi) &rarr;</div>
@@ -431,16 +427,16 @@
     </div> <!-- End slides-wrapper -->
 
     <!-- Navigation Controls -->
-    <div class="w-full bg-slate-100 border-t border-slate-300 px-8 py-4 flex justify-between items-center z-50 shrink-0">
+    <div class="w-full bg-slate-100 border-t border-slate-300 px-8 py-3 flex justify-between items-center z-50 shrink-0">
         <div class="flex gap-4">
-            <button id="prevBtn" class="px-6 py-3 bg-white hover:bg-slate-200 text-slate-800 rounded-lg shadow font-bold text-base transition-colors flex items-center gap-2 disabled:opacity-50">
-                <i data-lucide="chevron-left" class="w-5 h-5"></i> Prev
+            <button id="prevBtn" class="px-5 py-2.5 bg-white hover:bg-slate-200 text-slate-800 rounded-lg shadow font-bold text-sm transition-colors flex items-center gap-2 disabled:opacity-50">
+                <i data-lucide="chevron-left" class="w-4 h-4"></i> Prev
             </button>
-            <button id="nextBtn" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow font-bold text-base transition-colors flex items-center gap-2">
-                Next <i data-lucide="chevron-right" class="w-5 h-5"></i>
+            <button id="nextBtn" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow font-bold text-sm transition-colors flex items-center gap-2">
+                Next <i data-lucide="chevron-right" class="w-4 h-4"></i>
             </button>
         </div>
-        <div class="text-slate-600 font-bold text-lg">
+        <div class="text-slate-600 font-bold text-base">
             Slide <span id="currentSlideNum">1</span> of 7
         </div>
     </div>
@@ -448,13 +444,12 @@
 </div>
 
 <script>
-    // --- DECK SCALING LOGIC (FIT TO PAGE) FIXED ---
+    // --- DECK SCALING LOGIC (FIT TO PAGE) PERFECT CENTER ---
     function resizeDeck() {
         const deck = document.getElementById('deck');
         
-        // Menggunakan dimensi viewport yang paling akurat (hindari konflik dengan padding/margin dari iframe Github)
-        const windowWidth = window.innerWidth || document.documentElement.clientWidth;
-        const windowHeight = window.innerHeight || document.documentElement.clientHeight;
+        const windowWidth = window.innerWidth;
+        const windowHeight = window.innerHeight;
         
         // Resolusi virtual dasar presentasi (Fixed 16:9)
         const deckWidth = 1440;
@@ -463,12 +458,10 @@
         // Hitung skala minimum (agar lebar & tinggi selalu pas tanpa kepotong)
         const scale = Math.min(windowWidth / deckWidth, windowHeight / deckHeight);
         
-        // Hitung offset agar elemen tepat berada di tengah secara matematika murni
-        // Tanpa harus bergantung pada flexbox yang terkadang memotong overflow
-        const xOffset = (windowWidth - (deckWidth * scale)) / 2;
-        const yOffset = (windowHeight - (deckHeight * scale)) / 2;
-        
-        deck.style.transform = `translate(${xOffset}px, ${yOffset}px) scale(${scale})`;
+        // Karena CSS position deck disetel top: 50% dan left: 50%,
+        // translate(-50%, -50%) menjamin titik pusat element berada tepat di tengah layar.
+        // Penambahan scale() mengecilkan presentasi agar muat ke layar manapun.
+        deck.style.transform = `translate(-50%, -50%) scale(${scale})`;
     }
     
     // Jalankan auto-scale
@@ -523,7 +516,7 @@
     // Global Defaults for larger screens
     Chart.defaults.font.family = "'Inter', sans-serif";
     Chart.defaults.color = '#475569';
-    Chart.defaults.font.size = 15; // Increased base font size
+    Chart.defaults.font.size = 14;
 
     // Slide 1: Combo Chart (Revenue vs Transactions)
     const ctx1 = document.getElementById('chart1').getContext('2d');
@@ -558,10 +551,10 @@
             responsive: true, maintainAspectRatio: false,
             interaction: { mode: 'index', intersect: false },
             scales: {
-                y: { type: 'linear', display: true, position: 'left', title: { display: true, text: 'Pendapatan (Juta)', font: {size: 16, weight: 'bold'} } },
-                y1: { type: 'linear', display: true, position: 'right', grid: { drawOnChartArea: false }, title: { display: true, text: 'Total Transaksi', font: {size: 16, weight: 'bold'} }, min: 50, max: 120 }
+                y: { type: 'linear', display: true, position: 'left', title: { display: true, text: 'Pendapatan (Juta)', font: {size: 14, weight: 'bold'} } },
+                y1: { type: 'linear', display: true, position: 'right', grid: { drawOnChartArea: false }, title: { display: true, text: 'Total Transaksi', font: {size: 14, weight: 'bold'} }, min: 50, max: 120 }
             },
-            plugins: { legend: { position: 'top', labels: { font: {size: 16} } } }
+            plugins: { legend: { position: 'top', labels: { font: {size: 14} } } }
         }
     });
 
@@ -580,11 +573,11 @@
             responsive: true, maintainAspectRatio: false,
             scales: {
                 x: { stacked: true },
-                y: { stacked: true, max: 100, title: { display: true, text: 'Persentase (%)', font: {size: 16, weight: 'bold'} } }
+                y: { stacked: true, max: 100, title: { display: true, text: 'Persentase (%)', font: {size: 14, weight: 'bold'} } }
             },
             plugins: { 
-                legend: { position: 'top', labels: { font: {size: 16} } }, 
-                tooltip: { titleFont: {size: 16}, bodyFont: {size: 16}, callbacks: { label: (context) => context.dataset.label + ': ' + context.raw + '%' } } 
+                legend: { position: 'top', labels: { font: {size: 14} } }, 
+                tooltip: { titleFont: {size: 14}, bodyFont: {size: 14}, callbacks: { label: (context) => context.dataset.label + ': ' + context.raw + '%' } } 
             }
         }
     });
@@ -594,7 +587,7 @@
     new Chart(ctx3, {
         type: 'doughnut',
         data: {
-            labels: ['One-Time Buyers (1 Kali)', 'Repeat Customers'],
+            labels: ['One-Time Buyers', 'Repeat Customers'],
             datasets: [{
                 data: [65.6, 34.4],
                 backgroundColor: ['#ef4444', '#10b981'],
@@ -604,7 +597,7 @@
         },
         options: {
             responsive: true, maintainAspectRatio: false, cutout: '78%',
-            plugins: { legend: { position: 'bottom', labels: { font: {size: 16, padding: 20} } } }
+            plugins: { legend: { position: 'bottom', labels: { font: {size: 14, padding: 15} } } }
         }
     });
 
@@ -622,13 +615,13 @@
         options: {
             responsive: true, maintainAspectRatio: false,
             scales: {
-                x: { title: { display: true, text: 'Volume Transaksi (Jumlah)', font: {size: 16, weight: 'bold'} }, min: 10, max: 80 },
-                y: { title: { display: true, text: 'Yield / Efisiensi (Rp per Menit)', font: {size: 16, weight: 'bold'} }, min: 2000, max: 6000 }
+                x: { title: { display: true, text: 'Volume Transaksi (Jumlah)', font: {size: 14, weight: 'bold'} }, min: 10, max: 80 },
+                y: { title: { display: true, text: 'Yield / Efisiensi (Rp per Menit)', font: {size: 14, weight: 'bold'} }, min: 2000, max: 6000 }
             },
             plugins: {
-                legend: { position: 'bottom', labels: { font: {size: 16} } },
+                legend: { position: 'bottom', labels: { font: {size: 14} } },
                 tooltip: {
-                    titleFont: {size: 16}, bodyFont: {size: 16},
+                    titleFont: {size: 14}, bodyFont: {size: 14},
                     callbacks: {
                         label: (ctx) => `${ctx.dataset.label}: ${ctx.raw.x} Trx, Rp ${ctx.raw.y}/mnt`
                     }
@@ -662,22 +655,22 @@
             datasets: [
                 {
                     label: 'Pijat (Cash Cow)',
-                    data: [{ x: 182, y: 3654, r: 35 }],
-                    backgroundColor: 'rgba(59, 130, 246, 0.7)', // Blue
+                    data: [{ x: 182, y: 3654, r: 30 }],
+                    backgroundColor: 'rgba(59, 130, 246, 0.7)',
                     borderColor: 'rgb(37, 99, 235)',
                     borderWidth: 2
                 },
                 {
-                    label: 'Facial (Hidden Goldmine)',
+                    label: 'Facial (Goldmine)',
                     data: [{ x: 17, y: 6749, r: 12 }],
-                    backgroundColor: 'rgba(16, 185, 129, 0.8)', // Emerald
+                    backgroundColor: 'rgba(16, 185, 129, 0.8)',
                     borderColor: 'rgb(5, 150, 105)',
                     borderWidth: 2
                 },
                 {
                     label: 'Kecantikan (Capacity Trap)',
-                    data: [{ x: 72, y: 4073, r: 20 }],
-                    backgroundColor: 'rgba(239, 68, 68, 0.7)', // Red
+                    data: [{ x: 72, y: 4073, r: 18 }],
+                    backgroundColor: 'rgba(239, 68, 68, 0.7)',
                     borderColor: 'rgb(220, 38, 38)',
                     borderWidth: 2
                 }
@@ -687,21 +680,21 @@
             responsive: true, maintainAspectRatio: false,
             scales: {
                 x: { 
-                    title: { display: true, text: 'Volume Transaksi (Seberapa Laris)', font: {size: 16, weight: 'bold'} },
+                    title: { display: true, text: 'Volume Transaksi', font: {size: 14, weight: 'bold'} },
                     min: 0, max: 200
                 },
                 y: { 
-                    title: { display: true, text: 'Yield (Rp/Menit - Menguntungkan)', font: {size: 16, weight: 'bold'} },
+                    title: { display: true, text: 'Yield (Rp/Menit)', font: {size: 14, weight: 'bold'} },
                     min: 3000, max: 7500
                 }
             },
             plugins: {
-                legend: { position: 'bottom', labels: { font: {size: 16} } },
+                legend: { position: 'bottom', labels: { font: {size: 14} } },
                 tooltip: {
-                    titleFont: {size: 16}, bodyFont: {size: 15},
+                    titleFont: {size: 14}, bodyFont: {size: 14},
                     callbacks: {
                         label: function(context) {
-                            return `${context.dataset.label}: Vol ${context.raw.x} Trx | Yield Rp ${context.raw.y}/mnt`;
+                            return `${context.dataset.label}: Vol ${context.raw.x} | Rp ${context.raw.y}/mnt`;
                         }
                     }
                 }
@@ -714,3 +707,4 @@
 </script>
 </body>
 </html>
+```
